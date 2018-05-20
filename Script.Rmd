@@ -1,0 +1,340 @@
+---
+title: "Restaurante and consumer data"
+output: html_notebook
+---
+
+## ECDE - 2nd Semestre 2017/18
+
+<b>Group 2:</b><br />
+Alessandro Fragalà N 84080<br />
+Anderson Acosta N 81799<br />
+Maria Sales N 83748<br />
+
+The selected dataset for this project is ["Restaurante and consumer data"](https://archive.ics.uci.edu/ml/datasets/Restaurant+%26+consumer+data#), which was extracted from the UCI Machine Learning Repository.
+This dataset contains nine csv files: five of them have Restaurant categories, three have consumer categories and the last one contains ratings.
+
+## Business Undestanding
+
+The main purpose for this project is to "generate a top-n list of restaurants according to the consumer preferences". 
+
+## Data Understanding
+
+First step is to read all the datasets
+```{r}
+# Set workspace
+setwd("/Users/mariasales/Desktop/MIG/1A2A/ECDE/Trabalho")
+
+# Read datasets
+#Restaurants
+chefmozaccepts_df <- read.csv("chefmozaccepts.csv")
+chefmozcuisine_df <- read.csv("chefmozcuisine.csv")
+chefmozhours4_df <- read.csv("chefmozhours4.csv")
+chefmozparking_df <- read.csv("chefmozparking.csv")
+geoplaces2_df <- read.csv("geoplaces2.csv",encoding='latin-1')
+#Consumers 
+usercuisine_df <- read.csv("usercuisine.csv")
+userpayment_df <- read.csv("userpayment.csv")
+userprofile_df <- read.csv("userprofile.csv")
+#User-Item-Rating
+rating_final_df <- read.csv("rating_final.csv")
+```
+
+Then we want to analyze the imported data, as see some important statistics about all files:
+
+#### chefmozaccepts.csv
+```{r}
+# Columns
+names(chefmozaccepts_df)
+# Number of attributes
+ncol(chefmozaccepts_df)
+# Number of instances
+nrow(chefmozaccepts_df)
+# Summary
+summary(chefmozaccepts_df, maxsum = 1000)
+# Head
+head(chefmozaccepts_df)
+# Number of nulls
+sum(chefmozaccepts_df == "?")
+# Number of nulls per column
+colSums(chefmozaccepts_df == "?")
+```
+
+#### chefmozcuisine.csv
+```{r}
+# Columns
+names(chefmozcuisine_df)
+# Number of attributes
+ncol(chefmozcuisine_df)
+# Number of instances
+nrow(chefmozcuisine_df)
+# Summary
+summary(chefmozcuisine_df, maxsum = 1000)
+# Head
+head(chefmozcuisine_df)
+# Number of nulls
+sum(chefmozcuisine_df == "?")
+# Number of nulls per column
+colSums(chefmozcuisine_df == "?")
+```
+
+#### chefmozhours4.csv
+```{r}
+# Columns
+names(chefmozhours4_df)
+# Number of attributes
+ncol(chefmozhours4_df)
+# Number of instances
+nrow(chefmozhours4_df)
+# Summary
+summary(chefmozhours4_df, maxsum = 1000)
+# Head
+head(chefmozhours4_df)
+# Number of nulls
+sum(chefmozhours4_df == "?")
+# Number of nulls per column
+colSums(chefmozhours4_df == "?")
+```
+
+#### chefmozparking_df
+```{r}
+# Columns
+names(chefmozparking_df)
+# Number of attributes
+ncol(chefmozparking_df)
+# Number of instances
+nrow(chefmozparking_df)
+# Summary
+summary(chefmozparking_df, maxsum = 1000)
+# Head
+head(chefmozparking_df)
+# Number of nulls
+sum(chefmozparking_df == "?")
+# Number of nulls per column
+colSums(chefmozparking_df == "?")
+```
+
+#### geoplaces2_df
+```{r}
+# Columns
+names(geoplaces2_df)
+# Number of attributes
+ncol(geoplaces2_df)
+# Number of instances
+nrow(geoplaces2_df)
+# Summary
+summary(geoplaces2_df, maxsum = 1000)
+# Head
+head(geoplaces2_df)
+# Number of nulls
+sum(geoplaces2_df == "?")
+# Number of nulls per column
+colSums(geoplaces2_df == "?")
+```
+
+#### usercuisine_df
+```{r}
+# Columns
+names(usercuisine_df)
+# Number of attributes
+ncol(usercuisine_df)
+# Number of instances
+nrow(usercuisine_df)
+# Summary
+summary(usercuisine_df, maxsum = 1000)
+# Head
+head(usercuisine_df)
+# Number of nulls
+sum(usercuisine_df == "?")
+# Number of nulls per column
+colSums(usercuisine_df == "?")
+```
+
+#### userpayment_df
+```{r}
+# Columns
+names(userpayment_df)
+# Number of attributes
+ncol(userpayment_df)
+# Number of instances
+nrow(userpayment_df)
+# Summary
+summary(userpayment_df, maxsum = 1000)
+# Head
+head(userpayment_df)
+# Number of nulls
+sum(userpayment_df == "?")
+# Number of nulls per column
+colSums(userpayment_df == "?")
+```
+
+#### userprofile_df
+```{r}
+# Columns
+names(userprofile_df)
+# Number of attributes
+ncol(userprofile_df)
+# Number of instances
+nrow(userprofile_df)
+# Summary
+summary(userprofile_df, maxsum = 1000)
+# Head
+head(userprofile_df)
+# Number of nulls
+sum(userprofile_df == "?")
+# Number of nulls per column
+colSums(userprofile_df == "?")
+```
+
+#### rating_final_df
+```{r}
+# Columns
+names(rating_final_df)
+# Number of attributes
+ncol(rating_final_df)
+# Number of instances
+nrow(rating_final_df)
+# Summary
+summary(rating_final_df, maxsum = 1000)
+# Head
+head(rating_final_df)
+# Number of nulls
+sum(rating_final_df == "?")
+# Number of nulls per column
+colSums(rating_final_df == "?")
+```
+
+## Data Preparation
+
+#### chefmozaccepts.csv
+
+Treatments to be applied to this dataset:
+1. Rpayment should be categorized
+```{r}
+unique(chefmozaccepts_df$Rpayment)
+
+# transform payments to lowercase
+chefmozaccepts_df$Rpayment <- sapply(chefmozaccepts_df$Rpayment, tolower)
+
+# We have 615 unique placeID, but only 500 accept cash
+unique_rpayment <- unique(chefmozaccepts_df$placeID)
+length(unique_rpayment)
+
+# We will categorize Rpayment in 2 categories:
+# cash - 0/1
+# other - 0/1
+chefmozaccepts_df2 <- chefmozaccepts_df
+chefmozaccepts_df2$Rpayment_cash <- NA
+chefmozaccepts_df2$Rpayment_noCash <- NA
+# Remove duplicates based on chefmozaccepts_df.Rpayment column
+chefmozaccepts_df2 <- chefmozaccepts_df2[!duplicated(chefmozaccepts_df2$placeID), ]
+
+for(placeID in unique(chefmozaccepts_df$placeID)) {
+  payments <- chefmozaccepts_df[which(chefmozaccepts_df$placeID == placeID),]
+  if(is.element("cash", payments$Rpayment) & length(payments$Rpayment) > 1) {
+    # has both tyoe of payments
+    chefmozaccepts_df2[which(chefmozaccepts_df2$placeID == placeID),]$Rpayment_cash <- 1
+    chefmozaccepts_df2[which(chefmozaccepts_df2$placeID == placeID),]$Rpayment_noCash <- 1
+  }
+  else if(is.element("cash", payments$Rpayment) & length(payments$Rpayment) == 1) {
+    # only cash
+    chefmozaccepts_df2[which(chefmozaccepts_df2$placeID == placeID),]$Rpayment_cash <- 1
+    chefmozaccepts_df2[which(chefmozaccepts_df2$placeID == placeID),]$Rpayment_noCash <- 0
+  }
+  else { # if(!is.element("cash", payments$Rpayment))
+    # no cash
+    chefmozaccepts_df2[which(chefmozaccepts_df2$placeID == placeID),]$Rpayment_cash <- 0
+    chefmozaccepts_df2[which(chefmozaccepts_df2$placeID == placeID),]$Rpayment_noCash <- 1
+  }
+}
+
+# remove RPayment column because it's no longer necessary
+chefmozaccepts_df2 <- subset(chefmozaccepts_df2, select = c("placeID", "Rpayment_cash", "Rpayment_noCash"))
+# or chefmozaccepts_df2 <- chefmozaccepts_df2[,-2]
+```
+Currently Rpayment has 12 possible values: 'cash', 'VISA', 'MasterCard-Eurocard', 'American_Express', 'bank_debit_cards', 'checks', 'Discover', 'Carte_Blanche', Diners_Club', 'visa', 'Japan_Credit_Bureau' and 'gift_certificates'.
+We will merge some of them to create the following categories: 
+- Cash ('cash' and 'other', because userpayment_df doesn't have 'other' and we assume that 'cash' is a standard payment)
+- Debit ('bank_debit_cards')
+- Credit ('VISA', 'mastercard-eurocard', 'visa', 'american_express').
+
+#### chefmozcuisine.csv
+
+Treatments to be applied:
+1. Rcuisine should be categorized:
+  Currently Rcuisine has 7 categories
+  
+  
+
+#### userpayment.csv
+
+```{r}
+# We will categorize Rpayment in 2 categories:
+# cash - 0/1
+# other - 0/1
+userpayment_df2 <- userpayment_df
+userpayment_df2$Upayment_cash <- NA
+userpayment_df$Upayment_noCash <- NA
+# Remove duplicates based on chefmozaccepts_df.Rpayment column
+userpayment_df2 <- userpayment_df2[!duplicated(userpayment_df2$userID), ]
+
+for(userID in unique(userpayment_df$userID)) {
+  payments <- userpayment_df[which(userpayment_df$userID == userID),]
+  if(is.element("cash", payments$Upayment) & length(payments$Upayment) > 1) {
+    # has both tyoe of payments
+    userpayment_df2[which(userpayment_df2$userID == userID),]$Upayment_cash <- 1
+    userpayment_df2[which(userpayment_df2$userID == userID),]$Upayment_noCash <- 1
+  }
+  else if(is.element("cash", payments$Upayment) & length(payments$Upayment) == 1) {
+    # only cash
+    userpayment_df2[which(userpayment_df2$userID == userID),]$Upayment_cash <- 1
+    userpayment_df2[which(userpayment_df2$userID == userID),]$Upayment_noCash <- 0
+  }
+  else { # if(!is.element("cash", payments$Rpayment))
+    # no cash
+    userpayment_df2[which(userpayment_df2$userID == userID),]$Upayment_cash <- 0
+    userpayment_df2[which(userpayment_df2$userID == userID),]$Upayment_noCash <- 1
+  }
+}
+```
+
+
+
+
+To use 
+```{r}
+# Join dataframes
+final_df <- merge(rating_final_df, geoplaces2_df, by = "placeID")
+final_df <- merge(final_df, chefmozaccepts_df, by = "placeID")
+final_df <- merge(final_df, chefmozcuisine_df, by = "placeID")
+final_df <- merge(final_df, chefmozhours4_df, by = "placeID")
+final_df <- merge(final_df, chefmozparking_df, by = "placeID")
+final_df <- merge(final_df, userprofile_df, by = "userID")
+final_df <- merge(final_df, usercuisine_df, by = "userID")
+final_df <- merge(final_df, userpayment_df, by = "userID")
+```
+
+```{r}
+# Columns
+names(final_df)
+# Number of attributes
+ncol(final_df)
+# Number of instances
+nrow(final_df)
+# Summary
+summary(final_df)
+# Head
+head(final_df)
+# Number of nulls
+sum(final_df == "?")
+# Number of nulls per column
+colSums(final_df == "?")
+```
+
+# Bibliography
+
+https://www.kaggle.com/liyenhsu/simple-content-based-recommenders
+
+
+
+
+
