@@ -199,6 +199,40 @@ sum(userprofile_df == "?")
 colSums(userprofile_df == "?")
 ```
 
+Graphical visualization:
+
+1. Feature 'smoker'
+```{r}
+smoker_type <- c("true", "false", "?")
+countSmoker <- c()
+for(s in smoker_type) {
+  value <- length(userprofile_df[which(userprofile_df$smoker == s),]$smoker)
+  countSmoker <- c(countSmoker, value) # append to the end
+}
+barplot(countSmoker, main = "Smoker type by total of users", xlab = "Smoker type", ylab = "User count", names.arg = smoker_type)
+```
+2. Feature 'drink_level'
+```{r}
+drink_level_type <- c("abstemious", "casual drinker", "social drinker")
+countDrinkLevel <- c()
+for(s in drink_level_type) {
+  value <- length(userprofile_df[which(userprofile_df$drink_level == s),]$drink_level)
+  countDrinkLevel <- c(countDrinkLevel, value) # append to the end
+}
+barplot(countDrinkLevel, main = "Drink level", xlab = "Drink level type", ylab = "User count", names.arg = drink_level_type)
+```
+
+3. Feature 'drink_level'
+```{r}
+drink_level_type <- c("abstemious", "casual drinker", "social drinker")
+countDrinkLevel <- c()
+for(s in drink_level_type) {
+  value <- length(userprofile_df[which(userprofile_df$drink_level == s),]$drink_level)
+  countDrinkLevel <- c(countDrinkLevel, value) # append to the end
+}
+barplot(countDrinkLevel, main = "Drink level", xlab = "Drink level type", ylab = "User count", names.arg = drink_level_type)
+```
+
 #### rating_final
 ```{r}
 # Columns
