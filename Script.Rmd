@@ -203,6 +203,12 @@ sum(rating_final_df == "?")
 colSums(rating_final_df == "?")
 ```
 
+#### Conclusion
+```{r}
+sprintf("There are %d unique users.", length(unique(userprofile_df$userID)))
+sprintf("There are %d unique restaurants", length(unique(geoplaces2_df$placeID)))
+```
+
 ## Data Preparation
 
 #### chefmozaccepts.csv
@@ -262,8 +268,6 @@ We will merge some of them to create the following categories:
 Treatments to be applied:
 1. Rcuisine should be categorized:
   Currently Rcuisine has 7 categories
-  
-  
 
 #### userpayment.csv
 
@@ -296,9 +300,6 @@ for(userID in unique(userpayment_df$userID)) {
   }
 }
 ```
-
-
-
 
 To use 
 ```{r}
