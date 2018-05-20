@@ -291,6 +291,10 @@ sum(rating_final_df == "?")
 colSums(rating_final_df == "?")
 ```
 
+#### Exploratory visualization
+
+TODO!
+
 #### Conclusion
 ```{r}
 sprintf("There are %d unique users and %d unique restaurants", length(unique(userprofile_df$userID)), length(unique(geoplaces2_df$placeID)))
@@ -300,98 +304,17 @@ sprintf("There are %d unique users and %d unique restaurants", length(unique(use
 
 #### chefmozaccepts
 
-Treatments to be applied to this dataset:
-1. Rpayment should be categorized
-```{r}
-unique(chefmozaccepts_df$Rpayment)
-
-# transform payments to lowercase
-chefmozaccepts_df$Rpayment <- sapply(chefmozaccepts_df$Rpayment, tolower)
-
-# We have 615 unique placeID, but only 500 accept cash
-unique_rpayment <- unique(chefmozaccepts_df$placeID)
-length(unique_rpayment)
-
-# We will categorize Rpayment in 2 categories:
-# cash - 0/1
-# other - 0/1
-chefmozaccepts_df2 <- chefmozaccepts_df
-chefmozaccepts_df2$Rpayment_cash <- NA
-chefmozaccepts_df2$Rpayment_noCash <- NA
-# Remove duplicates based on chefmozaccepts_df.Rpayment column
-chefmozaccepts_df2 <- chefmozaccepts_df2[!duplicated(chefmozaccepts_df2$placeID), ]
-
-for(placeID in unique(chefmozaccepts_df$placeID)) {
-  payments <- chefmozaccepts_df[which(chefmozaccepts_df$placeID == placeID),]
-  if(is.element("cash", payments$Rpayment) & length(payments$Rpayment) > 1) {
-    # has both tyoe of payments
-    chefmozaccepts_df2[which(chefmozaccepts_df2$placeID == placeID),]$Rpayment_cash <- 1
-    chefmozaccepts_df2[which(chefmozaccepts_df2$placeID == placeID),]$Rpayment_noCash <- 1
-  }
-  else if(is.element("cash", payments$Rpayment) & length(payments$Rpayment) == 1) {
-    # only cash
-    chefmozaccepts_df2[which(chefmozaccepts_df2$placeID == placeID),]$Rpayment_cash <- 1
-    chefmozaccepts_df2[which(chefmozaccepts_df2$placeID == placeID),]$Rpayment_noCash <- 0
-  }
-  else { # if(!is.element("cash", payments$Rpayment))
-    # no cash
-    chefmozaccepts_df2[which(chefmozaccepts_df2$placeID == placeID),]$Rpayment_cash <- 0
-    chefmozaccepts_df2[which(chefmozaccepts_df2$placeID == placeID),]$Rpayment_noCash <- 1
-  }
-}
-
-# remove RPayment column because it's no longer necessary
-chefmozaccepts_df2 <- subset(chefmozaccepts_df2, select = c("placeID", "Rpayment_cash", "Rpayment_noCash"))
-# or chefmozaccepts_df2 <- chefmozaccepts_df2[,-2]
-```
-Currently Rpayment has 12 possible values: 'cash', 'VISA', 'MasterCard-Eurocard', 'American_Express', 'bank_debit_cards', 'checks', 'Discover', 'Carte_Blanche', Diners_Club', 'visa', 'Japan_Credit_Bureau' and 'gift_certificates'.
-We will merge some of them to create the following categories: 
-- Cash ('cash' and 'other', because userpayment_df doesn't have 'other' and we assume that 'cash' is a standard payment)
-- Debit ('bank_debit_cards')
-- Credit ('VISA', 'mastercard-eurocard', 'visa', 'american_express').
-
 #### chefmozcuisine
 
-Treatments to be applied:
-1. Rcuisine should be categorized:
-  Currently Rcuisine has 7 categories
-
 #### chefmozhours4
+
 #### chefmozparking
+
 #### geoplaces2
+
 #### usercuisine
 
 #### userpayment
-
-```{r}
-# We will categorize Rpayment in 2 categories:
-# cash - 0/1
-# other - 0/1
-userpayment_df2 <- userpayment_df
-userpayment_df2$Upayment_cash <- NA
-userpayment_df$Upayment_noCash <- NA
-# Remove duplicates based on chefmozaccepts_df.Rpayment column
-userpayment_df2 <- userpayment_df2[!duplicated(userpayment_df2$userID), ]
-
-for(userID in unique(userpayment_df$userID)) {
-  payments <- userpayment_df[which(userpayment_df$userID == userID),]
-  if(is.element("cash", payments$Upayment) & length(payments$Upayment) > 1) {
-    # has both tyoe of payments
-    userpayment_df2[which(userpayment_df2$userID == userID),]$Upayment_cash <- 1
-    userpayment_df2[which(userpayment_df2$userID == userID),]$Upayment_noCash <- 1
-  }
-  else if(is.element("cash", payments$Upayment) & length(payments$Upayment) == 1) {
-    # only cash
-    userpayment_df2[which(userpayment_df2$userID == userID),]$Upayment_cash <- 1
-    userpayment_df2[which(userpayment_df2$userID == userID),]$Upayment_noCash <- 0
-  }
-  else { # if(!is.element("cash", payments$Rpayment))
-    # no cash
-    userpayment_df2[which(userpayment_df2$userID == userID),]$Upayment_cash <- 0
-    userpayment_df2[which(userpayment_df2$userID == userID),]$Upayment_noCash <- 1
-  }
-}
-```
 
 #### userprofile
 
@@ -514,17 +437,17 @@ print(summary(userprofile_df$budget))
 
 #### rating_final
 
-To use 
+To be able to use all the relevant features in the model, we need to create a dataframe with them.
 ```{r}
 # Join dataframes
-final_df <- merge(rating_final_df, geoplaces2_df, by = "placeID")
-final_df <- merge(final_df, chefmozaccepts_df, by = "placeID")
+final_df <- merge(rating_final_df, chefmozaccepts_df, by = "placeID")
 final_df <- merge(final_df, chefmozcuisine_df, by = "placeID")
 final_df <- merge(final_df, chefmozhours4_df, by = "placeID")
 final_df <- merge(final_df, chefmozparking_df, by = "placeID")
-final_df <- merge(final_df, userprofile_df, by = "userID")
+final_df <- merge(final_df, geoplaces2_df, by = "placeID")
 final_df <- merge(final_df, usercuisine_df, by = "userID")
 final_df <- merge(final_df, userpayment_df, by = "userID")
+final_df <- merge(final_df, userprofile_df, by = "userID")
 ```
 
 ```{r}
@@ -543,6 +466,14 @@ sum(final_df == "?")
 # Number of nulls per column
 colSums(final_df == "?")
 ```
+
+## Modeling
+
+## Evaluation
+
+## Deployment
+
+This step will not be executed.
 
 # Bibliography
 
