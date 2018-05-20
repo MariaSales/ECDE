@@ -41,7 +41,7 @@ rating_final_df <- read.csv("rating_final.csv")
 
 Then we want to analyze the imported data, as see some important statistics about all files:
 
-#### chefmozaccepts.csv
+#### chefmozaccepts
 ```{r}
 # Columns
 names(chefmozaccepts_df)
@@ -59,7 +59,7 @@ sum(chefmozaccepts_df == "?")
 colSums(chefmozaccepts_df == "?")
 ```
 
-#### chefmozcuisine.csv
+#### chefmozcuisine
 ```{r}
 # Columns
 names(chefmozcuisine_df)
@@ -77,7 +77,7 @@ sum(chefmozcuisine_df == "?")
 colSums(chefmozcuisine_df == "?")
 ```
 
-#### chefmozhours4.csv
+#### chefmozhours4
 ```{r}
 # Columns
 names(chefmozhours4_df)
@@ -95,7 +95,7 @@ sum(chefmozhours4_df == "?")
 colSums(chefmozhours4_df == "?")
 ```
 
-#### chefmozparking_df
+#### chefmozparking
 ```{r}
 # Columns
 names(chefmozparking_df)
@@ -113,7 +113,7 @@ sum(chefmozparking_df == "?")
 colSums(chefmozparking_df == "?")
 ```
 
-#### geoplaces2_df
+#### geoplaces2
 ```{r}
 # Columns
 names(geoplaces2_df)
@@ -131,7 +131,7 @@ sum(geoplaces2_df == "?")
 colSums(geoplaces2_df == "?")
 ```
 
-#### usercuisine_df
+#### usercuisine
 ```{r}
 # Columns
 names(usercuisine_df)
@@ -149,7 +149,7 @@ sum(usercuisine_df == "?")
 colSums(usercuisine_df == "?")
 ```
 
-#### userpayment_df
+#### userpayment
 ```{r}
 # Columns
 names(userpayment_df)
@@ -167,7 +167,7 @@ sum(userpayment_df == "?")
 colSums(userpayment_df == "?")
 ```
 
-#### userprofile_df
+#### userprofile
 ```{r}
 # Columns
 names(userprofile_df)
@@ -185,7 +185,7 @@ sum(userprofile_df == "?")
 colSums(userprofile_df == "?")
 ```
 
-#### rating_final_df
+#### rating_final
 ```{r}
 # Columns
 names(rating_final_df)
@@ -210,7 +210,7 @@ sprintf("There are %d unique users and %d unique restaurants", length(unique(use
 
 ## Data Preparation
 
-#### chefmozaccepts.csv
+#### chefmozaccepts
 
 Treatments to be applied to this dataset:
 1. Rpayment should be categorized
@@ -262,13 +262,18 @@ We will merge some of them to create the following categories:
 - Debit ('bank_debit_cards')
 - Credit ('VISA', 'mastercard-eurocard', 'visa', 'american_express').
 
-#### chefmozcuisine.csv
+#### chefmozcuisine
 
 Treatments to be applied:
 1. Rcuisine should be categorized:
   Currently Rcuisine has 7 categories
 
-#### userpayment.csv
+#### chefmozhours4
+#### chefmozparking
+#### geoplaces2
+#### usercuisine
+
+#### userpayment
 
 ```{r}
 # We will categorize Rpayment in 2 categories:
@@ -299,6 +304,9 @@ for(userID in unique(userpayment_df$userID)) {
   }
 }
 ```
+
+#### userprofile
+#### rating_final
 
 To use 
 ```{r}
