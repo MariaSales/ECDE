@@ -448,9 +448,12 @@ final_df <- merge(final_df, geoplaces2_df, by = "placeID")
 final_df <- merge(final_df, usercuisine_df, by = "userID")
 final_df <- merge(final_df, userpayment_df, by = "userID")
 final_df <- merge(final_df, userprofile_df, by = "userID")
-```
 
-```{r}
+# Rename a column in R
+colnames(final_df)[colnames(final_df)=="Rcuisine.x"] <- "Rcuisine"
+colnames(final_df)[colnames(final_df)=="Rcuisine.y"] <- "UserRcuisine"
+
+# Analyze final dataframe
 # Columns
 names(final_df)
 # Number of attributes
@@ -465,9 +468,39 @@ head(final_df)
 sum(final_df == "?")
 # Number of nulls per column
 colSums(final_df == "?")
+
+# Drop unnecessary columns
+final_df <- final_df[,c("rating","Rpayment", "days", "parking_lot", "Upayment", "smoker", "drink_level", "dress_preference", "ambience", "transport", "marital_status", "hijos", "interest", "personality", "religion", "activity", "color", "budget")]
+
+# Dropped columns: userID, placeID, food_rating, service_rating, latitude, longitude, birth_year, weight, height, hours, UserRcuisine, Rcuisine
 ```
 
 ## Modeling
+
+The main goal for this project is to predict the ratings that would be given by each customer for the restaurants that he/she didn't rate. In Data Understanding we saw that ratings are numerical values, so predicting their values can be treated as a regression problem. Using classification techniques is also reasonable since the possible ratings are three discrete integers: 0, 1 and 2.
+
+
+### Holdout
+As this is a supervised learning problem, the first step is to select the training and test datasets.
+We will use the holdout technique.
+
+```{r}
+
+summary(final_df)
+H = holdout(final_df$rating, ratio = 0.8)
+```
+
+### Neuronal Network
+
+```{r}
+?fit
+Fi <- fit(rating~., final_df[H$tr,], model = "mlp")
+
+P <- predict(Fi, final_df[H$ts,])
+
+mmetric(final_df[H$ts,]$rating, P, metric = "MAE")
+mmetric(final_df[H$ts,]$rating, P, metric = "MAPE")
+```
 
 ## Evaluation
 
