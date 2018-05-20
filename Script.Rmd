@@ -13,6 +13,20 @@ Maria Sales N 83748<br />
 The selected dataset for this project is ["Restaurante and consumer data"](https://archive.ics.uci.edu/ml/datasets/Restaurant+%26+consumer+data#), which was extracted from the UCI Machine Learning Repository.
 This dataset contains nine csv files: five of them have Restaurant categories, three have consumer categories and the last one contains ratings.
 
+#### Library installation
+```{r}
+install.packages("rminer")
+library(rminer)
+```
+#### Auxiliar functions
+```{r}
+# Get mode
+getmode <- function(v) {
+   uniqv <- unique(v)
+   uniqv[which.max(tabulate(match(v, uniqv)))]
+}
+```
+
 ## Business Undestanding
 
 The main purpose for this project is to "generate a top-n list of restaurants according to the consumer preferences". 
@@ -306,6 +320,124 @@ for(userID in unique(userpayment_df$userID)) {
 ```
 
 #### userprofile
+
+```{r}
+sprintf("As seen in Data Understanding phase, userprofile dataset has %d missing values. The columns with missing values are 'smoker', 'ambience', 'transport', 'marital_status', 'hijos', 'activity' and 'budget'.", sum(userprofile_df == "?"))
+```
+
+'smoker' column:
+```{r}
+sprintf("1. 'smoker' column (nominal) has %d missing values, where %d are 'true' and %d are 'false. This means that the mode for this column is 'true'. In this case, and because it's preferrable to put a smoker person in a non-smoking restaurant than a non-smoker in a smoker restaurant, we will impute the missing values with 'true'.", sum(userprofile_df$smoker == "?"), sum(userprofile_df$smoker == 'true'), sum(userprofile_df$smoker == 'false'))
+
+# Force NA's
+userprofile_df[which(userprofile_df$smoker=="?"),]$smoker <- NA
+length(which(is.na(userprofile_df$smoker)))
+# Calculate mode
+smoker_mode <- getmode(na.omit(userprofile_df$smoker))
+smoker_mode
+# Substitute
+userprofile_df <- imputation("value", userprofile_df, "smoker", Value=smoker_mode)
+print(summary(userprofile_df$smoker))
+```
+
+'dress_preference' column:
+This column has 5 missing values. Because this is a column with nominal values, we will use mode as a susbtitute for NA's.
+```{r}
+# Force NA's
+userprofile_df[which(userprofile_df$dress_preference=="?"),]$dress_preference <- NA
+length(which(is.na(userprofile_df$dress_preference)))
+# Calculate mode
+dress_preference_mode <- getmode(na.omit(userprofile_df$dress_preference))
+dress_preference_mode
+# Substitute
+userprofile_df <- imputation("value", userprofile_df, "dress_preference", Value=dress_preference_mode)
+print(summary(userprofile_df$dress_preference))
+```
+
+'ambience' column:
+This column has 6 missing values. Because this is a column with nominal values, we will use mode as a susbtitute for NA's.
+```{r}
+# Force NA's
+userprofile_df[which(userprofile_df$ambience=="?"),]$ambience <- NA
+length(which(is.na(userprofile_df$ambience)))
+# Calculate mode
+ambience_mode <- getmode(na.omit(userprofile_df$ambience))
+ambience_mode
+# Substitute
+userprofile_df <- imputation("value", userprofile_df, "ambience", Value=ambience_mode)
+print(summary(userprofile_df$ambience))
+```
+
+'transport' column:
+This column has 7 missing values. Because this is a column with nominal values, we will use mode as a susbtitute for NA's.
+```{r}
+# Force NA's
+userprofile_df[which(userprofile_df$transport=="?"),]$transport <- NA
+length(which(is.na(userprofile_df$transport)))
+# Calculate mode
+transport_mode <- getmode(na.omit(userprofile_df$transport))
+transport_mode
+# Substitute
+userprofile_df <- imputation("value", userprofile_df, "transport", Value=transport_mode)
+print(summary(userprofile_df$transport))
+```
+
+'marital_status' column:
+This column has 4 missing values. Because this is a column with nominal values, we will use mode as a susbtitute for NA's.
+```{r}
+# Force NA's
+userprofile_df[which(userprofile_df$marital_status=="?"),]$marital_status <- NA
+length(which(is.na(userprofile_df$marital_status)))
+# Calculate mode
+marital_status_mode <- getmode(na.omit(userprofile_df$marital_status))
+marital_status_mode
+# Substitute
+userprofile_df <- imputation("value", userprofile_df, "marital_status", Value=marital_status_mode)
+print(summary(userprofile_df$marital_status))
+```
+
+'hijos' column:
+This column has 11 missing values. Because this is a column with nominal values, we will use mode as a susbtitute for NA's.
+```{r}
+# Force NA's
+userprofile_df[which(userprofile_df$hijos=="?"),]$hijos <- NA
+length(which(is.na(userprofile_df$hijos)))
+# Calculate mode
+hijos_mode <- getmode(na.omit(userprofile_df$hijos))
+hijos_mode
+# Substitute
+userprofile_df <- imputation("value", userprofile_df, "hijos", Value=hijos_mode)
+print(summary(userprofile_df$hijos))
+```
+
+'activity' column:
+This column has 7 missing values. Because this is a column with nominal values, we will use mode as a susbtitute for NA's.
+```{r}
+# Force NA's
+userprofile_df[which(userprofile_df$activity=="?"),]$activity <- NA
+length(which(is.na(userprofile_df$activity)))
+# Calculate mode
+activity_mode <- getmode(na.omit(userprofile_df$activity))
+activity_mode
+# Substitute
+userprofile_df <- imputation("value", userprofile_df, "activity", Value=activity_mode)
+print(summary(userprofile_df$activity))
+```
+
+'budget' column:
+This column has 7 missing values. Because this is a column with nominal values, we will use mode as a susbtitute for NA's.
+```{r}
+# Force NA's
+userprofile_df[which(userprofile_df$budget=="?"),]$budget <- NA
+length(which(is.na(userprofile_df$budget)))
+# Calculate mode
+budget_mode <- getmode(na.omit(userprofile_df$budget))
+budget_mode
+# Substitute
+userprofile_df <- imputation("value", userprofile_df, "budget", Value=budget_mode)
+print(summary(userprofile_df$budget))
+```
+
 #### rating_final
 
 To use 
@@ -341,6 +473,8 @@ colSums(final_df == "?")
 # Bibliography
 
 https://www.kaggle.com/liyenhsu/simple-content-based-recommenders
+
+Get mode: https://www.tutorialspoint.com/r/r_mean_median_mode.htm
 
 
 
