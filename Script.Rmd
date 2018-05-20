@@ -203,13 +203,15 @@ Graphical visualization:
 
 1. Feature 'smoker'
 ```{r}
+# Smoker
 smoker_type <- c("true", "false", "?")
 countSmoker <- c()
 for(s in smoker_type) {
   value <- length(userprofile_df[which(userprofile_df$smoker == s),]$smoker)
   countSmoker <- c(countSmoker, value) # append to the end
 }
-barplot(countSmoker, main = "Smoker type by total of users", xlab = "Smoker type", ylab = "User count", names.arg = smoker_type)
+smoker_bb <- barplot(countSmoker, main = "Smoker type by total of users", xlab = "Smoker type", ylab = "User count", names.arg = smoker_type)
+text(x = smoker_bb, y = countSmoker, labels=countSmoker, pos = 3)
 ```
 2. Feature 'drink_level'
 ```{r}
@@ -219,18 +221,56 @@ for(s in drink_level_type) {
   value <- length(userprofile_df[which(userprofile_df$drink_level == s),]$drink_level)
   countDrinkLevel <- c(countDrinkLevel, value) # append to the end
 }
-barplot(countDrinkLevel, main = "Drink level", xlab = "Drink level type", ylab = "User count", names.arg = drink_level_type)
+drink_level_bb <- barplot(countDrinkLevel, main = "Drink level", xlab = "Drink level type", ylab = "User count", names.arg = drink_level_type)
+text(x = drink_level_bb, y = countDrinkLevel, labels=countDrinkLevel, pos = 3)
 ```
 
-3. Feature 'drink_level'
+3. Feature 'transport'
 ```{r}
-drink_level_type <- c("abstemious", "casual drinker", "social drinker")
-countDrinkLevel <- c()
-for(s in drink_level_type) {
-  value <- length(userprofile_df[which(userprofile_df$drink_level == s),]$drink_level)
-  countDrinkLevel <- c(countDrinkLevel, value) # append to the end
+transport_type <- c("car owner", "on foot", "public", "?")
+countTransport <- c()
+for(s in transport_type) {
+  value <- length(userprofile_df[which(userprofile_df$transport == s),]$transport)
+  countTransport <- c(countTransport, value) # append to the end
 }
-barplot(countDrinkLevel, main = "Drink level", xlab = "Drink level type", ylab = "User count", names.arg = drink_level_type)
+transport_bb <- barplot(countTransport, main = "Transport", xlab = "Transport", ylab = "User count", names.arg = transport_type)
+text(x = transport_bb, y = countTransport, labels=countTransport, pos = 3)
+```
+
+4. Feature 'budget'
+```{r}
+budget_type <- c("hight", "low", "medium", "?")
+countBudget <- c()
+for(s in budget_type) {
+  value <- length(userprofile_df[which(userprofile_df$budget == s),]$budget)
+  countBudget <- c(countBudget, value) # append to the end
+}
+budget_bb <- barplot(countBudget, main = "Budget", xlab = "Budget", ylab = "User count", names.arg = budget_type)
+text(x = budget_bb, y = countBudget, labels=countBudget, pos = 3)
+```
+
+5. Feature 'dress_preference'
+```{r}
+dress_preference_type <- c("elegant", "formal", "informal", "no preference", "?")
+countDressPreference <- c()
+for(s in dress_preference_type) {
+  value <- length(userprofile_df[which(userprofile_df$dress_preference == s),]$dress_preference)
+  countDressPreference <- c(countDressPreference, value) # append to the end
+}
+dress_preference_bb <- barplot(countDressPreference, main = "Dress Preference", xlab = "Dress Preference", ylab = "User count", names.arg = dress_preference_type)
+text(x = dress_preference_bb, y = countDressPreference, labels=countDressPreference, pos = 3)
+```
+
+5. Feature 'ambience'
+```{r}
+ambience_type <- c("family", "friends", "solitary", "?")
+countAmbience <- c()
+for(s in ambience_type) {
+  value <- length(userprofile_df[which(userprofile_df$ambience == s),]$ambience)
+  countAmbience <- c(countAmbience, value) # append to the end
+}
+ambience_bb <- barplot(countAmbience, main = "Ambience", xlab = "Ambience", ylab = "User count", names.arg = ambience_type)
+text(x = ambience_bb, y = countAmbience, labels=countAmbience, pos = 3)
 ```
 
 #### rating_final
