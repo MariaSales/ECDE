@@ -420,41 +420,48 @@ sprintf("There are %d unique users and %d unique restaurants", length(unique(use
 
 #### chefmozcuisine
 
-As observed in Data Understanding, this dataset has an attribute (Rcuisine) which has 59 levels. An important treatment to this feature is to reduce the amount of levels. Rcuisine represents the type of the cuisine of the restaurant, so the following levels will be created and used (instead of the originals presented in the dataset):
+As observed in Data Understanding, this dataset has an attribute (Rcuisine) which has 59 levels. An important treatment to this feature is to reduce the amount of levels. The same problem exists in usercuisine dataframe, but instead this one has 103 levels. To accommodate the treatment for both datasets, the following levels will be created and used (instead of the originals presented in the datasets):
+
 1. Bar/Cafeteria 
-  - Bagels, Bakery, Bar, Bar_Pub_Brewery, Breakfast-Brunch, Cafe-Coffee_Shop, Cafeteria, Deli-Sandwiches, Dessert-Ice_Cream, Juice      
+  - Bagels, Bakery, Bar, Bar_Pub_Brewery, Breakfast-Brunch, Cafe-Coffee_Shop, Cafeteria, Deli-Sandwiches, Dessert-Ice_Cream, Doughnuts, Juice      
 2. Mexican
-  - Mexican, Regional
+  - Mexican, Regional, Tex-Mex
 3. Asian
-  - Asian, Chinese, Japanese, Korean, Mongolian, Sushi, Thai, Vietnamese
+  - Asian, Cambodian, Chinese, Dim_Sum, Filipino, Japanese, Korean, Malaysian, Mongolian, Sushi, Thai, Tibetan, Vietnamese
 4. Internationl (others)
   - Afghan, African, American, Armenian, Barbecue, Brazilian, Burgers, California, Caribbean, Contemporary, Continental-European, Diner, Dutch-Belgian, Eastern_European, Ethiopian, Family, Fast_Food, Fine_Dining, French, Game, German, Greek, Hot_Dogs, International, Italian, Latin_American, Mediterranean, Organic-Healthy, Persian, Pizzeria, Polish, Seafood, Soup, Southern, Southwestern, Spanish, Steaks, Turkish, Vegetarian
 
 ```{r}
+# Define auxiliar function to calculate Rcuisine
+calculateRcuisine <- function(dataset) {
+  dataset$cuisine <- c("")
+  # Compute new cuisine types
+  for(i in seq_len(nrow(dataset))) {
+    cuisine <- as.character(dataset[i,2])
+    if(cuisine == "Bagels" || cuisine == "Bakery" || cuisine == "Bar" || cuisine == "Bar_Pub_Brewery" || cuisine == "Breakfast-Brunch" || cuisine == "Cafe-Coffee_Shop" || cuisine == "Cafeteria" || cuisine == "Deli-Sandwiches" || cuisine == "Dessert-Ice_Cream" || cuisine == "Doughnuts" || cuisine == "Juice") {
+      dataset[i,3] <- "Bar/Cafeteria"
+    } else if(cuisine == "Mexican" || cuisine == "Regional" || cuisine == "Tex-Mex") {
+      dataset[i,3] <- "Mexican"
+    } else if(cuisine == "Asian" || cuisine == "Cambodian" || cuisine == "Chinese" || cuisine == "Dim_Sum" || cuisine == "Filipino" || cuisine == "Japanese" || cuisine == "Korean" || cuisine == "Malaysian" || cuisine == "Mongolian" || cuisine == "Sushi" || cuisine == "Thai" || cuisine == "Tibetan" || cuisine == "Vietnamese") {
+      dataset[i,3] <- "Asian"
+    } else {
+      dataset[i,3] <- "International"
+    }
+  }
+  # Transform Rcuisine to calculated values as factor
+  dataset$Rcuisine <- as.factor(dataset$cuisine)
+  return(dataset)
+}
+```
+
+```{r}
 sprintf("Rcuisine has %d levels.", nlevels(chefmozcuisine_df$Rcuisine))
 
-restaurant_cuisine_df <- chefmozcuisine_df
-restaurant_cuisine_df$cuisine <- c("")
+# Calculate new RCuisine types
+chefmozcuisine_df <- calculateRcuisine(chefmozcuisine_df)
 
-# Compute new cuisine types
-for(i in seq_len(nrow(restaurant_cuisine_df))) {
-  cuisine <- as.character(restaurant_cuisine_df[i,2])
-  if(cuisine == "Bagels" || cuisine == "Bakery" || cuisine == "Bar" || cuisine == "Bar_Pub_Brewery" || cuisine == "Breakfast-Brunch" || cuisine == "Cafe-Coffee_Shop" || cuisine == "Cafeteria" || cuisine == "Deli-Sandwiches" || cuisine == "Dessert-Ice_Cream" || cuisine == "Juice") {
-    restaurant_cuisine_df[i,3] <- "Bar/Cafeteria"
-  } else if(cuisine == "Mexican" || cuisine == "Regional") {
-    restaurant_cuisine_df[i,3] <- "Mexican"
-  } else if(cuisine == "Asian" || cuisine == "Chinese" || cuisine == "Japanese" || cuisine == "Korean" || cuisine == "Mongolian" || cuisine == "Sushi" || cuisine == "Thai" || cuisine == "Vietnamese") {
-    restaurant_cuisine_df[i,3] <- "Asian"
-  } else {
-    restaurant_cuisine_df[i,3] <- "International"
-  }
-}
-
-# Transform Rcuisine to calculated values as factor
-restaurant_cuisine_df$Rcuisine <- as.factor(restaurant_cuisine_df$cuisine)
 # Drop unnecessary column
-restaurant_cuisine_df <- restaurant_cuisine_df[,c("placeID", "Rcuisine")]
-
+chefmozcuisine_df <- chefmozcuisine_df[,c("placeID", "Rcuisine")]
 ```
 
 #### chefmozhours4
@@ -526,6 +533,18 @@ geoplaces2_df <- restaurant_df
 ```
 
 #### usercuisine
+
+As discussed in chefmozcuisine section, a treatment to Rcuisine will be applied.
+
+```{r}
+sprintf("Rcuisine has %d levels.", nlevels(usercuisine_df$Rcuisine))
+
+# Calculate new RCuisine types
+usercuisine_df <- calculateRcuisine(usercuisine_df)
+
+# Drop unnecessary column
+usercuisine_df <- usercuisine_df[,c("userID", "Rcuisine")]
+```
 
 #### userpayment
 
