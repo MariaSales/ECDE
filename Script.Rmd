@@ -27,10 +27,10 @@ calculateMode <- function(v) {
 }
 
 # Draw barplot
-drawBarplot <- function(type, title, xlab, ylab, feature) {
+drawBarplot <- function(dataframe, type, title, xlab, ylab, feature) {
   count <- c()
   for(s in type) {
-    value <- length(userprofile_df[which(userprofile_df[,feature] == s),feature])
+    value <- length(dataframe[which(dataframe[,feature] == s),feature])
     count <- c(count, value) # append to the end
   }
   bb <- barplot(count, main = title, xlab = xlab, ylab = ylab, names.arg = type, ylim = c(0, max(count) + 10))
@@ -82,6 +82,18 @@ head(chefmozaccepts_df)
 sum(chefmozaccepts_df == "?")
 # Number of nulls per column
 colSums(chefmozaccepts_df == "?")
+```
+
+Graphical visualization:
+
+1. Feature 'Rpayment'
+```{r}
+rpayment <- c("American_Express", "bank_debit_cards", "Carte_Blanche", "cash", "checks", "Diners_Club", "Discover", "gift_certificates", "Japan_Credit_Bureau", "MasterCard-Eurocard", "VISA", "VISA")
+title <- "Total of users by Rpayment"
+xlab <- "RPayment"
+ylab <- "User count"
+feature <- "Rpayment"
+drawBarplot(chefmozaccepts_df, rpayment, title, xlab, ylab, feature)
 ```
 
 #### chefmozcuisine
@@ -219,7 +231,7 @@ title <- "Total of users by smoker type"
 xlab <- "Smoker type"
 ylab <- "User count"
 feature <- "smoker"
-drawBarplot(smoker_type, title, xlab, ylab, feature)
+drawBarplot(userprofile_df, smoker_type, title, xlab, ylab, feature)
 ```
 
 2. Feature 'drink_level'
@@ -229,7 +241,7 @@ title <- "Total users per drink level"
 xlab <- "Drink level"
 ylab <- "User count"
 feature <- "drink_level"
-drawBarplot(drink_level_type, title, xlab, ylab, feature)
+drawBarplot(userprofile_df, drink_level_type, title, xlab, ylab, feature)
 ```
 
 3. Feature 'dress_preference'
@@ -239,7 +251,7 @@ title <- "Total users per dress preference"
 xlab <- "Dress Preference"
 ylab <- "User count"
 feature <- "dress_preference"
-drawBarplot(dress_preference_type, title, xlab, ylab, feature)
+drawBarplot(userprofile_df, dress_preference_type, title, xlab, ylab, feature)
 ```
 
 4. Feature 'ambience'
@@ -249,7 +261,7 @@ title <- "Total users per dress ambience"
 xlab <- "Ambience"
 ylab <- "User count"
 feature <- "ambience"
-drawBarplot(ambience_type, title, xlab, ylab, feature)
+drawBarplot(userprofile_df, ambience_type, title, xlab, ylab, feature)
 ```
 
 5. Feature 'transport'
@@ -259,7 +271,7 @@ title <- "Total users per transport type"
 xlab <- "Transport"
 ylab <- "User count"
 feature <- "transport"
-drawBarplot(transport_type, title, xlab, ylab, feature)
+drawBarplot(userprofile_df, transport_type, title, xlab, ylab, feature)
 ```
 
 6. Feature 'marital_status'
@@ -269,7 +281,7 @@ title <- "Total users per marital status"
 xlab <- "Marital Status"
 ylab <- "User count"
 feature <- "marital_status"
-drawBarplot(marital_status, title, xlab, ylab, feature)
+drawBarplot(userprofile_df, marital_status, title, xlab, ylab, feature)
 ```
 
 7. Feature 'hijos'
@@ -279,7 +291,7 @@ title <- "Total users per children"
 xlab <- "Children"
 ylab <- "User count"
 feature <- "hijos"
-drawBarplot(hijos, title, xlab, ylab, feature)
+drawBarplot(userprofile_df, hijos, title, xlab, ylab, feature)
 ```
 
 8. Feature 'interest'
@@ -289,7 +301,7 @@ title <- "Total users per interest"
 xlab <- "Interest"
 ylab <- "User count"
 feature <- "interest"
-drawBarplot(interest, title, xlab, ylab, feature)
+drawBarplot(userprofile_df, interest, title, xlab, ylab, feature)
 ```
 
 9. Feature 'personality'
@@ -299,7 +311,7 @@ title <- "Total users per personality"
 xlab <- "Personality"
 ylab <- "User count"
 feature <- "personality"
-drawBarplot(personality, title, xlab, ylab, feature)
+drawBarplot(userprofile_df, personality, title, xlab, ylab, feature)
 ```
 
 10. Feature 'religion'
@@ -309,7 +321,7 @@ title <- "Total users per religion"
 xlab <- "Religion"
 ylab <- "User count"
 feature <- "religion"
-drawBarplot(religion, title, xlab, ylab, feature)
+drawBarplot(userprofile_df, religion, title, xlab, ylab, feature)
 ```
 
 11. Feature 'activity'
@@ -319,7 +331,7 @@ title <- "Total users per activity"
 xlab <- "Activity"
 ylab <- "User count"
 feature <- "activity"
-drawBarplot(activity, title, xlab, ylab, feature)
+drawBarplot(userprofile_df, activity, title, xlab, ylab, feature)
 ```
 
 12. Feature 'color'
@@ -329,7 +341,7 @@ title <- "Total users per color"
 xlab <- "Color"
 ylab <- "User count"
 feature <- "color"
-drawBarplot(color, title, xlab, ylab, feature)
+drawBarplot(userprofile_df, color, title, xlab, ylab, feature)
 ```
 
 13. Feature 'budget'
@@ -339,11 +351,10 @@ title <- "Total users per budget type"
 xlab <- "Budget"
 ylab <- "User count"
 feature <- "budget"
-drawBarplot(budget_type, title, xlab, ylab, feature)
+drawBarplot(userprofile_df, budget_type, title, xlab, ylab, feature)
 ```
 
 ```{r}
-
 user_ratings <- merge(rating_final_df, userprofile_df, by = "userID")
 
 mean_low_rating <- mean(user_ratings[which(user_ratings$budget == "low"),]$rating)
