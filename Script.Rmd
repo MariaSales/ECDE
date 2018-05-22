@@ -17,6 +17,7 @@ This dataset contains nine csv files: five of them have Restaurant categories, t
 ```{r}
 install.packages("rminer")
 library(rminer)
+library(data.table)
 ```
 #### Auxiliar functions
 ```{r}
@@ -424,6 +425,65 @@ sprintf("There are %d unique users and %d unique restaurants", length(unique(use
 #### chefmozparking
 
 #### geoplaces2
+
+In this dataset there are some missing hours:
+
+```{r}
+rest_df <- geoplaces2_df[,c("placeID", "latitude", "longitude", "city", "alcohol", 
+                            "smoking_area", "dress_code", "accessibility", "price", "Rambience",
+                            "franchise", "area", "other_services")]
+
+rest_st_df <- chefmozhours4_df[which(chefmozhours4_df$days == "Sat;"),]
+
+rest_sd_df <- chefmozhours4_df[which(chefmozhours4_df$days == "Sun;"),]
+rest_wk_df <- chefmozhours4_df[which(chefmozhours4_df$days == "Mon;Tue;Wed;Thu;Fri;"),]
+
+rest_days_df <- merge(rest_st_df, rest_sd_df, by = "placeID")
+rest_days_df <- merge(rest_days_df, rest_wk_df, by = "placeID")
+
+setnames(rest_days_df, old=c("hours.x","hours.y","hours"), new=c("st", "sd","wk"))
+
+rest_days_df <- rest_days_df[,c("placeID", "st", "sd","wk")]
+
+rest_days_df <- rest_days_df[!duplicated(rest_days_df[c("placeID", "st", "sd","wk")]),]
+
+rest_days_df <- data.frame(lapply(rest_days_df, as.character), stringsAsFactors = FALSE)
+  
+restaurant_df <- merge(rest_df, rest_days_df, by = "placeID", all.x = TRUE)
+
+for(placeID in unique(restaurant_df$placeID)) {
+  test <- restaurant_df[which(restaurant_df$placeID == placeID),]
+  if(is.element("00:00-00:00;", test$st)){
+    #Closed restaurant
+    restaurant_df[which(restaurant_df$placeID == placeID),]$st <- 0
+  } else {
+    #Open restaurant (the Na will considered "open")
+    restaurant_df[which(restaurant_df$placeID == placeID),]$st <- 1
+  }
+}
+
+for(placeID in unique(restaurant_df$placeID)) {
+  test <- restaurant_df[which(restaurant_df$placeID == placeID),]
+  if(is.element("00:00-00:00;", test$sd)){
+    #Closed restaurant
+    restaurant_df[which(restaurant_df$placeID == placeID),]$sd <- 0
+  } else {
+    #Open restaurant (the Na will considered "open")
+    restaurant_df[which(restaurant_df$placeID == placeID),]$sd <- 1
+  }
+}
+
+for(placeID in unique(restaurant_df$placeID)) {
+  test <- restaurant_df[which(restaurant_df$placeID == placeID),]
+  if(is.element("00:00-00:00;", test$st)){
+    #Closed restaurant
+    restaurant_df[which(restaurant_df$placeID == placeID),]$wk <- 0
+  } else {
+    #Open restaurant (the Na will considered "open")
+    restaurant_df[which(restaurant_df$placeID == placeID),]$wk <- 1
+  }
+}
+```
 
 #### usercuisine
 
