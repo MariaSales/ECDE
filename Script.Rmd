@@ -342,6 +342,38 @@ feature <- "budget"
 drawBarplot(budget_type, title, xlab, ylab, feature)
 ```
 
+```{r}
+
+user_ratings <- merge(rating_final_df, userprofile_df, by = "userID")
+
+mean_low_rating <- mean(user_ratings[which(user_ratings$budget == "low"),]$rating)
+mean_medium_rating <- mean(user_ratings[which(user_ratings$budget == "medium"),]$rating)
+mean_high_rating <- mean(user_ratings[which(user_ratings$budget == "high"),]$rating)
+
+mean_low_service <- mean(user_ratings[which(user_ratings$budget == "low"),]$service)
+mean_medium_service <- mean(user_ratings[which(user_ratings$budget == "medium"),]$service)
+mean_high_service <- mean(user_ratings[which(user_ratings$budget == "high"),]$service)
+
+mean_low_food <- mean(user_ratings[which(user_ratings$budget == "low"),]$food)
+mean_medium_food <- mean(user_ratings[which(user_ratings$budget == "medium"),]$food)
+mean_high_food <- mean(user_ratings[which(user_ratings$budget == "high"),]$food)
+
+# Create data:
+budget <- c(0, 1, 2)
+rating <- c(mean_low_rating, mean_medium_rating, mean_high_rating)
+service <- c(mean_low_service, mean_medium_service, mean_high_service)
+food <- c(mean_low_food, mean_medium_food, mean_high_food)
+
+# Make a basic graph
+plot(rating~budget, type="b", main="Mean rating per budget type", bty="l", xlab="Budget type", ylab="Mean rating", col=rgb(0.2,0.4,0.1,0.7), lwd=3, pch=17 ,ylim=c(1, 2))
+lines(service~budget , col=rgb(0.8,0.4,0.1,0.7) , lwd=3 , pch=18 , type="b" )
+lines(food~budget , col=rgb(0.6,0.3,0.2,0.7) , lwd=3 , pch=19 , type="b" )
+
+# Add a legend
+legend("topright", legend = c("Combined", "Service", "Food"), col = c(rgb(0.2,0.4,0.1,0.7), rgb(0.8,0.4,0.1,0.7), rgb(0.6,0.3,0.2,0.7)), pch = c(17,18,19), bty = "n", pt.cex = 2, cex = 1.2, text.col = "black", horiz = F , inset = c(0.1, 0.1))
+
+```
+
 
 #### rating_final
 ```{r}
