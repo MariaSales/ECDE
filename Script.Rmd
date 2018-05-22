@@ -426,7 +426,8 @@ sprintf("There are %d unique users and %d unique restaurants", length(unique(use
 
 #### geoplaces2
 
-In this dataset there are some missing hours:
+Select only relevant features.
+Treat missing hours and create relevant features.
 
 ```{r}
 rest_df <- geoplaces2_df[,c("placeID", "latitude", "longitude", "city", "alcohol", 
@@ -483,6 +484,8 @@ for(placeID in unique(restaurant_df$placeID)) {
     restaurant_df[which(restaurant_df$placeID == placeID),]$wk <- 1
   }
 }
+
+geoplaces2_df <- restaurant_df
 ```
 
 #### usercuisine
