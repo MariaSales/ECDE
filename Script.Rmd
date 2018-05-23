@@ -10,8 +10,13 @@ Alessandro Fragalà N 84080<br />
 Anderson Acosta N 81799<br />
 Maria Sales N 83748<br />
 
+## Business Undestanding
+
 The selected dataset for this project is ["Restaurante and consumer data"](https://archive.ics.uci.edu/ml/datasets/Restaurant+%26+consumer+data#), which was extracted from the UCI Machine Learning Repository.
-This dataset contains nine csv files: five of them have Restaurant categories, three have consumer categories and the last one contains ratings.
+This dataset contains information about consumers, restaurants and ratings that consumers gave to restaurants, distributed among nine .csv files: five of them about restaurants, three have consumer information and the last one contains the ratings.
+The main purpose for this project is to analyze the given data and predict the missing ratings.
+
+## Data Understanding
 
 #### Library installation
 ```{r}
@@ -19,6 +24,7 @@ install.packages("rminer")
 library(rminer)
 library(data.table)
 ```
+
 #### Auxiliar functions
 ```{r}
 # Calculate mode
@@ -34,40 +40,38 @@ drawBarplot <- function(dataframe, type, title, xlab, ylab, feature) {
     value <- length(dataframe[which(dataframe[,feature] == s),feature])
     count <- c(count, value) # append to the end
   }
-  bb <- barplot(count, main = title, xlab = xlab, ylab = ylab, names.arg = type, ylim = c(0, max(count) + 10))
+  # par(mar=c(10,10,1,1))
+  bb <- barplot(count, main = title, xlab = xlab, ylab = ylab, names.arg = type, ylim = c(0, max(count) + max(count)*0.2)) # las = 2
   text(x = bb, y = count, labels = count, pos = 3)
 }
 ```
 
-## Business Undestanding
-
-The main purpose for this project is to "generate a top-n list of restaurants according to the consumer preferences". 
-
-## Data Understanding
-
-First step is to read all the datasets
+First step to start analyzing the provided data is to read all the .csv files and store them in separate datasets.
 ```{r}
-# Set workspace
-setwd("/Users/mariasales/Desktop/MIG/1A2A/ECDE/Trabalho")
 
 # Read datasets
-#Restaurants
+# Restaurants
 chefmozaccepts_df <- read.csv("chefmozaccepts.csv")
 chefmozcuisine_df <- read.csv("chefmozcuisine.csv")
 chefmozhours4_df <- read.csv("chefmozhours4.csv")
 chefmozparking_df <- read.csv("chefmozparking.csv")
 geoplaces2_df <- read.csv("geoplaces2.csv",encoding='latin-1')
-#Consumers 
+# Consumers 
 usercuisine_df <- read.csv("usercuisine.csv")
 userpayment_df <- read.csv("userpayment.csv")
 userprofile_df <- read.csv("userprofile.csv")
-#User-Item-Rating
+# User-Item-Rating
 rating_final_df <- read.csv("rating_final.csv")
 ```
 
-Then we want to analyze the imported data, as see some important statistics about all files:
+Then we want to analyze the imported data by visualizing important statistics about the datasets:
 
-#### chefmozaccepts
+#### Dataset 1: chefmozaccepts
+
+This dataset contains information about the payment methods that the restaurants accept. It contains the following features:
+- placeID: corresponds to the restaurant id;
+- Rpayment: corresponds to the type of payment that the restaurant in the matching row accepts. This is a nominal feature with 12 levels.
+From this analysis we conclude that this dataset has no missing values, but a treatment to Rpayment is necessary to reduce the number of levels of this feature.
 ```{r}
 # Columns
 names(chefmozaccepts_df)
@@ -83,21 +87,28 @@ head(chefmozaccepts_df)
 sum(chefmozaccepts_df == "?")
 # Number of nulls per column
 colSums(chefmozaccepts_df == "?")
+# Number of levels of Rpayment
+sprintf("Rpayment has %d levels.", nlevels(chefmozaccepts_df$Rpayment))
 ```
 
-Graphical visualization:
+##### Feature 1.1: Rpayment
 
-1. Feature 'Rpayment'
+A graphical visualization with a barplot shows the distribution of this feature.
 ```{r}
 rpayment <- c("American_Express", "bank_debit_cards", "Carte_Blanche", "cash", "checks", "Diners_Club", "Discover", "gift_certificates", "Japan_Credit_Bureau", "MasterCard-Eurocard", "VISA", "VISA")
-title <- "Total of users by Rpayment"
+title <- "Total restaurants per payment type"
 xlab <- "RPayment"
-ylab <- "User count"
+ylab <- "Restaurant count"
 feature <- "Rpayment"
 drawBarplot(chefmozaccepts_df, rpayment, title, xlab, ylab, feature)
 ```
 
-#### chefmozcuisine
+#### Dataset 2: chefmozcuisine
+
+This dataset contains information about the type of cuisine of the restaurants It contains the following features:
+- placeID: corresponds to the restaurant id;
+- Rcuisine: corresponds to the type of cuisine of the restaurant. This is a nominal feature with 59 levels.
+From this analysis we conclude that this dataset has no missing values, but a treatment to Rcuisine is necessary to reduce the number of levels of this feature.
 ```{r}
 # Columns
 names(chefmozcuisine_df)
@@ -113,9 +124,29 @@ head(chefmozcuisine_df)
 sum(chefmozcuisine_df == "?")
 # Number of nulls per column
 colSums(chefmozcuisine_df == "?")
+# Number of levels of Rcuisine
+sprintf("Rcuisine has %d levels.", nlevels(chefmozcuisine_df$Rcuisine))
 ```
 
-#### chefmozhours4
+##### Feature 2.1: Rcuisine
+
+A graphical visualization with a barplot shows the distribution of this feature.
+```{r}
+rcuisine <- unique(chefmozcuisine_df$Rcuisine)
+title <- "Total restaurants per cuisine type"
+xlab <- "Rcuisine"
+ylab <- "Restaurant count"
+feature <- "Rcuisine"
+drawBarplot(chefmozcuisine_df, rcuisine, title, xlab, ylab, feature)
+```
+
+#### Dataset 3: chefmozhours4
+
+This dataset contains information about the hours and days that each restaurant is open/closed. It contains the following features:
+- placeID: corresponds to the restaurant id;
+- hours: corresponds to the hours that the restaurant is open/closed. This is a nominal feature with 273 levels;
+- days: corresponds to the day of the week that the restaurant is open/closed. This is a nominal feature with 3 levels.
+From this analysis we conclude that this dataset has no missing values, but a treatment to hours is necessary to reduce the number of levels of this feature.
 ```{r}
 # Columns
 names(chefmozhours4_df)
@@ -131,9 +162,18 @@ head(chefmozhours4_df)
 sum(chefmozhours4_df == "?")
 # Number of nulls per column
 colSums(chefmozhours4_df == "?")
+# Number of levels of hours
+sprintf("hours has %d levels.", nlevels(chefmozhours4_df$hours))
+# Number of levels of days
+sprintf("days has %d levels.", nlevels(chefmozhours4_df$days))
 ```
 
-#### chefmozparking
+#### Dataset 4: chefmozparking
+
+This dataset contains information about the parking that each restaurant offers. It contains the following features:
+- placeID: corresponds to the restaurant id;
+- parking_lot: corresponds to the type of parking. This is a nominal feature with 7 levels.
+From this analysis we conclude that this dataset has no missing values, but a treatment to parking_lot is necessary to reduce the number of levels of this feature.
 ```{r}
 # Columns
 names(chefmozparking_df)
@@ -149,9 +189,51 @@ head(chefmozparking_df)
 sum(chefmozparking_df == "?")
 # Number of nulls per column
 colSums(chefmozparking_df == "?")
+# Number of levels of parking_lot
+sprintf("parking_lot has %d levels.", nlevels(chefmozparking_df$parking_lot))
 ```
 
-#### geoplaces2
+##### Feature 4.1: parking_lot
+
+A graphical visualization with a barplot shows the distribution of this feature.
+```{r}
+parking_lot <- unique(chefmozparking_df$parking_lot)
+title <- "Total restaurants per parking lot type"
+xlab <- "Parking Lot"
+ylab <- "Restaurant count"
+feature <- "parking_lot"
+drawBarplot(chefmozparking_df, parking_lot, title, xlab, ylab, feature)
+```
+
+#### Dataset 5: geoplaces2
+
+This dataset contains generic information about each restaurant. It contains the following features:
+- placeID: corresponds to the restaurant id;
+- latitude and longitude: correspond to the geospatial coordinates of the restaurant. These are both numeric features;
+- the_geom_meter: geospatial variable. This is a nominal feature with 130 levels;
+- name: name of the restaurant;
+- address: address of the restaurant. This is a nominal feature with 100 levels and 27 missing values;
+- city: city of the restaurant. This is a nominal feature with 17 levels and 18 missing values;
+- state: state of the restaurant. This is a nominal feature with 13 levels and 18 missing values;
+- country: country of the restaurant. This is a nominal feature with 3 levels and 28 missing values;
+- fax: fax of the restaurant. This is a numeric feature with 130 missing values;
+- zip: zip code of the restaurant. This is a numeric feature with 35 levels and 74 missing values;
+- alcohol: 
+- smoking_area
+- dress_code
+- accessibility
+- price
+- url
+- Rambience
+- franchise
+- area
+- other_services
+
+
+
+- parking_lot: corresponds to the type of parking. This is a nominal feature with 7 levels.
+From this analysis we conclude that this dataset has no missing values, but a treatment to parking_lot is necessary to reduce the number of levels of this feature.
+
 ```{r}
 # Columns
 names(geoplaces2_df)
@@ -167,6 +249,9 @@ head(geoplaces2_df)
 sum(geoplaces2_df == "?")
 # Number of nulls per column
 colSums(geoplaces2_df == "?")
+
+
+sprintf("There are %d unique users and %d unique restaurants", length(unique(userprofile_df$userID)), length(unique(geoplaces2_df$placeID)))
 ```
 
 Graphical visualization:
@@ -201,7 +286,7 @@ lines(food~budget , col=rgb(0.6,0.3,0.2,0.7) , lwd=3 , pch=19 , type="b" )
 legend("bottomright", legend = c("Combined", "Service", "Food"), col = c(rgb(0.2,0.4,0.1,0.7), rgb(0.8,0.4,0.1,0.7), rgb(0.6,0.3,0.2,0.7)), pch = c(17,18,19), bty = "n", pt.cex = 2, cex = 1.2, text.col = "black", horiz = F , inset = c(0.1, 0.1))
 ```
 
-#### usercuisine
+#### Dataset 6: usercuisine
 ```{r}
 # Columns
 names(usercuisine_df)
@@ -219,7 +304,7 @@ sum(usercuisine_df == "?")
 colSums(usercuisine_df == "?")
 ```
 
-#### userpayment
+#### Dataset 7: userpayment
 ```{r}
 # Columns
 names(userpayment_df)
@@ -237,7 +322,7 @@ sum(userpayment_df == "?")
 colSums(userpayment_df == "?")
 ```
 
-#### userprofile
+#### Dataset 8: userprofile
 ```{r}
 # Columns
 names(userprofile_df)
@@ -387,7 +472,7 @@ feature <- "budget"
 drawBarplot(userprofile_df, budget_type, title, xlab, ylab, feature)
 ```
 
-#### rating_final
+#### Dataset 9: rating_final
 ```{r}
 # Columns
 names(rating_final_df)
@@ -405,20 +490,11 @@ sum(rating_final_df == "?")
 colSums(rating_final_df == "?")
 ```
 
-#### Exploratory visualization
-
-TODO!
-
-#### Conclusion
-```{r}
-sprintf("There are %d unique users and %d unique restaurants", length(unique(userprofile_df$userID)), length(unique(geoplaces2_df$placeID)))
-```
-
 ## Data Preparation
 
-#### chefmozaccepts
+#### Dataset 1: chefmozaccepts
 
-#### chefmozcuisine
+#### Datset 2: chefmozcuisine
 
 As observed in Data Understanding, this dataset has an attribute (Rcuisine) which has 59 levels. An important treatment to this feature is to reduce the amount of levels. The same problem exists in usercuisine dataframe, but instead this one has 103 levels. To accommodate the treatment for both datasets, the following levels will be created and used (instead of the originals presented in the datasets):
 
@@ -455,8 +531,6 @@ calculateRcuisine <- function(dataset) {
 ```
 
 ```{r}
-sprintf("Rcuisine has %d levels.", nlevels(chefmozcuisine_df$Rcuisine))
-
 # Calculate new RCuisine types
 chefmozcuisine_df <- calculateRcuisine(chefmozcuisine_df)
 
