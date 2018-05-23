@@ -68,7 +68,7 @@ Then we want to analyze the imported data by visualizing important statistics ab
 
 #### Dataset 1: chefmozaccepts
 
-This dataset contains information about the payment methods that the restaurants accept. It contains the following features:
+This dataset contains information about the payment methods that restaurants accept. It contains the following features:
 - placeID: corresponds to the restaurant id;
 - Rpayment: corresponds to the type of payment that the restaurant in the matching row accepts. This is a nominal feature with 12 levels.
 From this analysis we conclude that this dataset has no missing values, but a treatment to Rpayment is necessary to reduce the number of levels of this feature.
@@ -89,18 +89,6 @@ sum(chefmozaccepts_df == "?")
 colSums(chefmozaccepts_df == "?")
 # Number of levels of Rpayment
 sprintf("Rpayment has %d levels.", nlevels(chefmozaccepts_df$Rpayment))
-```
-
-##### Feature 1.1: Rpayment
-
-A graphical visualization with a barplot shows the distribution of this feature.
-```{r}
-rpayment <- c("American_Express", "bank_debit_cards", "Carte_Blanche", "cash", "checks", "Diners_Club", "Discover", "gift_certificates", "Japan_Credit_Bureau", "MasterCard-Eurocard", "VISA", "VISA")
-title <- "Total restaurants per payment type"
-xlab <- "RPayment"
-ylab <- "Restaurant count"
-feature <- "Rpayment"
-drawBarplot(chefmozaccepts_df, rpayment, title, xlab, ylab, feature)
 ```
 
 #### Dataset 2: chefmozcuisine
@@ -126,18 +114,6 @@ sum(chefmozcuisine_df == "?")
 colSums(chefmozcuisine_df == "?")
 # Number of levels of Rcuisine
 sprintf("Rcuisine has %d levels.", nlevels(chefmozcuisine_df$Rcuisine))
-```
-
-##### Feature 2.1: Rcuisine
-
-A graphical visualization with a barplot shows the distribution of this feature.
-```{r}
-rcuisine <- unique(chefmozcuisine_df$Rcuisine)
-title <- "Total restaurants per cuisine type"
-xlab <- "Rcuisine"
-ylab <- "Restaurant count"
-feature <- "Rcuisine"
-drawBarplot(chefmozcuisine_df, rcuisine, title, xlab, ylab, feature)
 ```
 
 #### Dataset 3: chefmozhours4
@@ -173,7 +149,7 @@ sprintf("days has %d levels.", nlevels(chefmozhours4_df$days))
 This dataset contains information about the parking that each restaurant offers. It contains the following features:
 - placeID: corresponds to the restaurant id;
 - parking_lot: corresponds to the type of parking. This is a nominal feature with 7 levels.
-From this analysis we conclude that this dataset has no missing values, but a treatment to parking_lot is necessary to reduce the number of levels of this feature.
+From this analysis we conclude that this dataset has no missing values, and no treatment is necessary.
 ```{r}
 # Columns
 names(chefmozparking_df)
@@ -218,21 +194,25 @@ This dataset contains generic information about each restaurant. It contains the
 - country: country of the restaurant. This is a nominal feature with 3 levels and 28 missing values;
 - fax: fax of the restaurant. This is a numeric feature with 130 missing values;
 - zip: zip code of the restaurant. This is a numeric feature with 35 levels and 74 missing values;
-- alcohol: 
-- smoking_area
-- dress_code
-- accessibility
-- price
-- url
-- Rambience
-- franchise
-- area
-- other_services
+- alcohol: indicates the type of bar service that the restaurant provides. This is a nominal feature with 3 levels;
+- smoking_area: indicates the type of smoking area that the restaurant provides. This is a nominal feature with 5 levels;
+- dress_code: dress code allowed in the restaurant. This is a nominal feature with 3 levels;
+- accessibility: indicates the accessibility that the restaurant  provides for disabled people. This is a nominal feature with 3 levels;
+- price: budget range of the restaurant. This is a nominal feature with 3 levels;
+- url: url of the restaurant. Contains 116 missing values;
+- Rambience: type of ambience of the restaurant. This is a nominal feature with 2 levels;
+- franchise: indicates if the restaurant is a franchise or not. This is a nominal feature with 2 levels;
+- area: indicates the type of the area of the restaurant. This is a nominal feature with 2 levels;
+- other_services: indicates if the restaurant offers any additional service or not. This is a nominal feature with 3 levels.
 
+From this analysis we conclude that this dataset needs the following treatments:
+- drop the_geom_meter. The location of the restaurant will be given by the city
+- discover the missing cities with the given latitute and longitude, and then drop these coordinates
+- drop the name of the restaurant, because naming doesn't influence ratings
+- drop address, state, fax and zip, because these features don't influence ratings 
+- drop country, because all restaurants are from Mexico (irrelevant feature)
 
-
-- parking_lot: corresponds to the type of parking. This is a nominal feature with 7 levels.
-From this analysis we conclude that this dataset has no missing values, but a treatment to parking_lot is necessary to reduce the number of levels of this feature.
+Additionaly, we conclude that in total there are 130 unique restaurants.
 
 ```{r}
 # Columns
@@ -249,27 +229,74 @@ head(geoplaces2_df)
 sum(geoplaces2_df == "?")
 # Number of nulls per column
 colSums(geoplaces2_df == "?")
-
-
-sprintf("There are %d unique users and %d unique restaurants", length(unique(userprofile_df$userID)), length(unique(geoplaces2_df$placeID)))
+# Number of restaurants
+sprintf("There are %d unique restaurants", length(unique(geoplaces2_df$placeID)))
 ```
 
-Graphical visualization:
+An interesting analysis is to try to understand if some of the given restaurant features affect the ratings. For that we elaborate some connected scatterplots.
 
 ```{r}
-user_ratings <- merge(rating_final_df, geoplaces2_df, by = "placeID")
+# Merge ratings and restaurants
+ratings_restaurants <- merge(rating_final_df, geoplaces2_df, by = "placeID")
+```
 
-mean_low_rating <- mean(user_ratings[which(user_ratings$price == "low"),]$rating)
-mean_medium_rating <- mean(user_ratings[which(user_ratings$price == "medium"),]$rating)
-mean_high_rating <- mean(user_ratings[which(user_ratings$price == "high"),]$rating)
+##### Feature 5.1: alcohol
 
-mean_low_service <- mean(user_ratings[which(user_ratings$price == "low"),]$service)
-mean_medium_service <- mean(user_ratings[which(user_ratings$price == "medium"),]$service)
-mean_high_service <- mean(user_ratings[which(user_ratings$price == "high"),]$service)
+```{r}
+# Calculate mean rating per each type of price for general rating
+mean_low_rating <- mean(ratings_restaurants[which(ratings_restaurants$alcohol == "No_Alcohol_Served"),]$rating)
+mean_medium_rating <- mean(ratings_restaurants[which(ratings_restaurants$alcohol == "Full_Bar"),]$rating)
+mean_high_rating <- mean(ratings_restaurants[which(ratings_restaurants$alcohol == "Wine-Beer"),]$rating)
 
-mean_low_food <- mean(user_ratings[which(user_ratings$price == "low"),]$food)
-mean_medium_food <- mean(user_ratings[which(user_ratings$price == "medium"),]$food)
-mean_high_food <- mean(user_ratings[which(user_ratings$price == "high"),]$food)
+# Calculate mean rating per each type of price for service rating
+mean_low_service <- mean(ratings_restaurants[which(ratings_restaurants$alcohol == "No_Alcohol_Served"),]$service)
+mean_medium_service <- mean(ratings_restaurants[which(ratings_restaurants$alcohol == "Full_Bar"),]$service)
+mean_high_service <- mean(ratings_restaurants[which(ratings_restaurants$alcohol == "Wine-Beer"),]$service)
+
+# Calculate mean rating per each type of price for food rating
+mean_low_food <- mean(ratings_restaurants[which(ratings_restaurants$alcohol == "No_Alcohol_Served"),]$food)
+mean_medium_food <- mean(ratings_restaurants[which(ratings_restaurants$alcohol == "Full_Bar"),]$food)
+mean_high_food <- mean(ratings_restaurants[which(ratings_restaurants$alcohol == "Wine-Beer"),]$food)
+
+# Create data:
+budget <- c(0, 1, 2)
+rating <- c(mean_low_rating, mean_medium_rating, mean_high_rating)
+service <- c(mean_low_service, mean_medium_service, mean_high_service)
+food <- c(mean_low_food, mean_medium_food, mean_high_food)
+
+# Make a basic graph
+plot(rating~budget, type="b", main="Mean rating per alcohol", bty="l", xlab="Alcohol", ylab="Mean rating", col=rgb(0.2,0.4,0.1,0.7), lwd=3, pch=17 ,ylim=c(1.0, 1.3))
+lines(service~budget , col=rgb(0.8,0.4,0.1,0.7) , lwd=3 , pch=18 , type="b" )
+lines(food~budget , col=rgb(0.6,0.3,0.2,0.7) , lwd=3 , pch=19 , type="b" )
+
+# Add a legend
+legend("bottomright", legend = c("Combined", "Service", "Food"), col = c(rgb(0.2,0.4,0.1,0.7), rgb(0.8,0.4,0.1,0.7), rgb(0.6,0.3,0.2,0.7)), pch = c(17,18,19), bty = "n", pt.cex = 2, cex = 1.2, text.col = "black", horiz = F , inset = c(0.1, 0.1))
+```
+
+##### Feature 5.2: smoking_are
+
+##### Feature 5.3: dress_code
+
+##### Feature 5.4: accessibility
+
+##### Feature 5.5: price
+
+From the following chart we can conclude that medium and high price restaurants have better ratings than lower price restaurants.
+```{r}
+# Calculate mean rating per each type of price for general rating
+mean_low_rating <- mean(ratings_restaurants[which(ratings_restaurants$price == "low"),]$rating)
+mean_medium_rating <- mean(ratings_restaurants[which(ratings_restaurants$price == "medium"),]$rating)
+mean_high_rating <- mean(ratings_restaurants[which(ratings_restaurants$price == "high"),]$rating)
+
+# Calculate mean rating per each type of price for service rating
+mean_low_service <- mean(ratings_restaurants[which(ratings_restaurants$price == "low"),]$service)
+mean_medium_service <- mean(ratings_restaurants[which(ratings_restaurants$price == "medium"),]$service)
+mean_high_service <- mean(ratings_restaurants[which(ratings_restaurants$price == "high"),]$service)
+
+# Calculate mean rating per each type of price for food rating
+mean_low_food <- mean(ratings_restaurants[which(ratings_restaurants$price == "low"),]$food)
+mean_medium_food <- mean(ratings_restaurants[which(ratings_restaurants$price == "medium"),]$food)
+mean_high_food <- mean(ratings_restaurants[which(ratings_restaurants$price == "high"),]$food)
 
 # Create data:
 budget <- c(0, 1, 2)
@@ -285,8 +312,20 @@ lines(food~budget , col=rgb(0.6,0.3,0.2,0.7) , lwd=3 , pch=19 , type="b" )
 # Add a legend
 legend("bottomright", legend = c("Combined", "Service", "Food"), col = c(rgb(0.2,0.4,0.1,0.7), rgb(0.8,0.4,0.1,0.7), rgb(0.6,0.3,0.2,0.7)), pch = c(17,18,19), bty = "n", pt.cex = 2, cex = 1.2, text.col = "black", horiz = F , inset = c(0.1, 0.1))
 ```
+##### Feature 5.6: Rambience
+
+##### Feature 5.7: franchise
+
+##### Feature 5.8: area
+
+##### Feature 5.9: other_services
 
 #### Dataset 6: usercuisine
+
+This dataset contains information about the preferred cuisine(s) type(s) for each user. It contains the following features:
+- userID: corresponds to the user id;
+- Rcuisine: corresponds to the type(s) of cuisine(s) that the user prefers. This is a nominal feature with 103 levels.
+From this analysis we conclude that this dataset has no missing values, but a treatment to Rcuisine is necessary to reduce the number of levels of this feature. This treatment should match the one done to Rcuisine from chefmozcuisine.
 ```{r}
 # Columns
 names(usercuisine_df)
@@ -302,9 +341,16 @@ head(usercuisine_df)
 sum(usercuisine_df == "?")
 # Number of nulls per column
 colSums(usercuisine_df == "?")
+# Number of levels of Rcuisine
+sprintf("Rcuisine has %d levels.", nlevels(usercuisine_df$Rcuisine))
 ```
 
 #### Dataset 7: userpayment
+
+This dataset contains information about the payment methods that users prefers. It contains the following features:
+- userID: corresponds to the user id;
+- Upayment: corresponds to the type of payment that the user prefers. This is a nominal feature with 5 levels.
+From this analysis we conclude that this dataset has no missing values, but a treatment to Upayment is necessary to reduce the number of levels of this feature, and it should match the treatment made to chefmozaccepts.
 ```{r}
 # Columns
 names(userpayment_df)
@@ -320,9 +366,56 @@ head(userpayment_df)
 sum(userpayment_df == "?")
 # Number of nulls per column
 colSums(userpayment_df == "?")
+# Number of levels of Rpayment
+sprintf("Upayment has %d levels.", nlevels(userpayment_df$Upayment))
+```
+
+##### Feature 7.1: Upayment
+
+A graphical visualization with a barplot shows the distribution of this feature.
+```{r}
+upayment <- unique(userpayment_df$Upayment)
+title <- "Total users per payment type"
+xlab <- "UPayment"
+ylab <- "User count"
+feature <- "Upayment"
+drawBarplot(userpayment_df, upayment, title, xlab, ylab, feature)
 ```
 
 #### Dataset 8: userprofile
+
+This dataset contains information about the users that rated the restaurants. It contains the following features:
+- userID: corresponds to the user id;
+- latitude and longitude: correspond to the geospatial coordinates of the user These are both numeric features;
+- smoker: indicates whether the user is smoker or not. This is a nominal feature with 2 levels and 3 missing values;
+- drink_level: indicates the drink level of the user. This is a nominal feature with 3 levels;
+- dress_preference: indicates the user's dress preference. This is a nominal feature with 4 levels and 5 missing values;
+- ambience: indicates the ambience that the user prefers. This is a nominal feature with 3 levels and 6 missing values;
+- transport: indicates the kind of transportation that the user prefers. This is a nominal feature with 3 levels and 7 missing values;
+- marital_status: indicates the marital status of the user. This is a nominal feature with 3 levels and 4 missing values;
+- hijos: indicates wheter the user has kids or not. This is a nominal feature with 3 levels and 11 missing values;
+- birth_year: user birth year. This is a numeric feature.
+- interest: indicates user's interest. This is a nominal feature with 5 levels;
+- personality: indicates user's personality. This is a nominal feature with 4 levels;
+- religion: indicates user's religion. This is a nominal feature with 5 levels;
+- activity: indicates user's activity. This is a nominal feature with 4 levels and 7 missing values;
+- color: indicates user's color preference. This is a nominal feature with 8 levels;
+- weight: user's weight (numeric);
+- budget: indicates user's budget. This is a nominal feature with 3 levels and 7 missing values;
+- height: user's height (numeric).
+
+From this analysis we conclude that this dataset needs the following treatments:
+- discover the user cities to match the restaurant cities with the given latitute and longitude, and then drop these coordinates
+- treat smoker missing values
+- treat dress_preference missing values
+- treat ambience missing values
+- treat transport missing values
+- treat marital_status missing values
+- treat hijos missing values
+- treat activity missing values
+- treat budget missing values
+
+Additionaly, we conclude that in total there are 138 unique users.
 ```{r}
 # Columns
 names(userprofile_df)
@@ -338,11 +431,14 @@ head(userprofile_df)
 sum(userprofile_df == "?")
 # Number of nulls per column
 colSums(userprofile_df == "?")
+# Number of users
+sprintf("There are %d unique users", length(unique(userprofile_df$userID)))
+
 ```
 
 Graphical visualization:
 
-1. Feature 'smoker'
+##### Feature 8.1: smoker
 ```{r}
 smoker_type <- c("true", "false", "?")
 title <- "Total of users by smoker type"
@@ -352,7 +448,7 @@ feature <- "smoker"
 drawBarplot(userprofile_df, smoker_type, title, xlab, ylab, feature)
 ```
 
-2. Feature 'drink_level'
+##### Feature 8.2: drink_level
 ```{r}
 drink_level_type <- c("abstemious", "casual drinker", "social drinker")
 title <- "Total users per drink level"
@@ -362,7 +458,7 @@ feature <- "drink_level"
 drawBarplot(userprofile_df, drink_level_type, title, xlab, ylab, feature)
 ```
 
-3. Feature 'dress_preference'
+##### Feature 8.3: dress_preference
 ```{r}
 dress_preference_type <- c("elegant", "formal", "informal", "no preference", "?")
 title <- "Total users per dress preference"
@@ -372,7 +468,7 @@ feature <- "dress_preference"
 drawBarplot(userprofile_df, dress_preference_type, title, xlab, ylab, feature)
 ```
 
-4. Feature 'ambience'
+##### Feature 8.4: ambience
 ```{r}
 ambience_type <- c("family", "friends", "solitary", "?")
 title <- "Total users per dress ambience"
@@ -382,7 +478,7 @@ feature <- "ambience"
 drawBarplot(userprofile_df, ambience_type, title, xlab, ylab, feature)
 ```
 
-5. Feature 'transport'
+##### Feature 8.5: transport
 ```{r}
 transport_type <- c("car owner", "on foot", "public", "?")
 title <- "Total users per transport type"
@@ -392,7 +488,7 @@ feature <- "transport"
 drawBarplot(userprofile_df, transport_type, title, xlab, ylab, feature)
 ```
 
-6. Feature 'marital_status'
+##### Feature 8.6: marital_status
 ```{r}
 marital_status <- c("married", "single", "widow", "?")
 title <- "Total users per marital status"
@@ -402,7 +498,7 @@ feature <- "marital_status"
 drawBarplot(userprofile_df, marital_status, title, xlab, ylab, feature)
 ```
 
-7. Feature 'hijos'
+##### Feature 8.7: hijos
 ```{r}
 hijos <- c("dependent", "independent", "kids", "?")
 title <- "Total users per children"
@@ -412,7 +508,7 @@ feature <- "hijos"
 drawBarplot(userprofile_df, hijos, title, xlab, ylab, feature)
 ```
 
-8. Feature 'interest'
+##### Feature 8.8: interest
 ```{r}
 interest <- c("eco-friendly", "none", "retro", "technology", "variety", "?")
 title <- "Total users per interest"
@@ -422,7 +518,7 @@ feature <- "interest"
 drawBarplot(userprofile_df, interest, title, xlab, ylab, feature)
 ```
 
-9. Feature 'personality'
+##### Feature 8.9: personality
 ```{r}
 personality <- c("conformist", "hard-worker", "hunter-ostentatious", "thrifty-protector", "?")
 title <- "Total users per personality"
@@ -432,7 +528,7 @@ feature <- "personality"
 drawBarplot(userprofile_df, personality, title, xlab, ylab, feature)
 ```
 
-10. Feature 'religion'
+##### Feature 8.10: religion
 ```{r}
 religion <- c("Catholic", "Christian", "Jewish", "Mormon", "none", "?")
 title <- "Total users per religion"
@@ -442,7 +538,7 @@ feature <- "religion"
 drawBarplot(userprofile_df, religion, title, xlab, ylab, feature)
 ```
 
-11. Feature 'activity'
+##### Feature 8.11: activity
 ```{r}
 activity <- c("professional", "student", "unemployed", "working-class", "?")
 title <- "Total users per activity"
@@ -452,7 +548,7 @@ feature <- "activity"
 drawBarplot(userprofile_df, activity, title, xlab, ylab, feature)
 ```
 
-12. Feature 'color'
+##### Feature 8.12: color
 ```{r}
 color <- c("black", "blue", "green", "orange", "purple", "red", "white", "yellow", "?")
 title <- "Total users per color"
@@ -462,7 +558,7 @@ feature <- "color"
 drawBarplot(userprofile_df, color, title, xlab, ylab, feature)
 ```
 
-13. Feature 'budget'
+##### Feature 8.13: budget
 ```{r}
 budget_type <- c("hight", "low", "medium", "?")
 title <- "Total users per budget type"
@@ -494,12 +590,63 @@ colSums(rating_final_df == "?")
 
 #### Dataset 1: chefmozaccepts
 
+As observed in Data Understanding, this dataset has an attribute (Rpayment) that has 12 levels. An important treatment to this feature is to reduce the amount of levels. The same problem exists in userpayment dataframe, but instead this one has XXXXXX levels. To accommodate the treatment for both datasets, the following levels will be created and used (instead of the originals presented in the datasets):
+
+1. Card 
+  - American_Express, bank_debit_cards, Carte_Blanche, Visa, VISA, MasterCard-Eurocard
+2. Cash
+  - cash
+3. Other
+  - checks, Diners_Club, Discover, gift_certificates, Japan_Credit_Bureau, 
+
+```{r}
+# Define auxiliar function to calculate Rpayment
+calculateRpayment <- function(dataset) {
+  dataset$payment <- c("")
+  
+  # Compute new payment types
+  for(i in seq_len(nrow(dataset))) {
+    payment <- as.character(dataset[i,2])
+    if(payment == "American_Express" || payment == "bank_debit_cards" || payment == "Carte_Blanche" || payment == "Visa" || payment == "VISA" || payment == "MasterCard-Eurocard") {
+      dataset[i,3] <- "Card"
+    } else if(payment == "cash") {
+      dataset[i,3] <- "Cash"
+    } else {
+      dataset[i,3] <- "Other"
+    }
+  }
+  # Transform Rpayment to calculated values as factor
+  dataset[,2] <- as.factor(dataset$payment)
+  return(dataset)
+}
+```
+
+This feature started with the following information:
+```{r}
+summary(chefmozaccepts_df$Rpayment)
+```
+
+So it's expected that it ends with:
+  - 153 (American_Express) + 130 (bank_debit_cards) + 7 (Carte_Blanche) + 83 (Visa) + 172 (VISA) + 194 (MasterCard-Eurocard) = 739 (Card)
+  - 500 (Cash)
+  - 10 (checks) + 42 (Diners_Club) + 11 (Discover) + 7 (gift_certificates) + 5 (Japan_Credit_Bureau) = 75 (Other)
+  
+```{r}
+# Calculate new Rpayment types
+chefmozaccepts_df <- calculateRpayment(chefmozaccepts_df)
+
+# Drop unnecessary column
+chefmozaccepts_df <- chefmozaccepts_df[,c("placeID", "Rpayment")]
+
+summary(chefmozaccepts_df$Rpayment)
+```
+
 #### Datset 2: chefmozcuisine
 
-As observed in Data Understanding, this dataset has an attribute (Rcuisine) which has 59 levels. An important treatment to this feature is to reduce the amount of levels. The same problem exists in usercuisine dataframe, but instead this one has 103 levels. To accommodate the treatment for both datasets, the following levels will be created and used (instead of the originals presented in the datasets):
+As observed in Data Understanding, this dataset has an attribute (Rcuisine) that has 59 levels. An important treatment to this feature is to reduce the amount of levels. The same problem exists in usercuisine dataframe, but instead this one has 103 levels. To accommodate the treatment for both datasets, the following levels will be created and used (instead of the originals presented in the datasets):
 
 1. Bar/Cafeteria 
-  - Bagels, Bakery, Bar, Bar_Pub_Brewery, Breakfast-Brunch, Cafe-Coffee_Shop, Cafeteria, Deli-Sandwiches, Dessert-Ice_Cream, Doughnuts, Juice      
+  - Bagels, Bakery, Bar, Bar_Pub_Brewery, Breakfast-Brunch, Cafe-Coffee_Shop, Cafeteria, Deli-Sandwiches, Dessert-Ice_Cream, Doughnuts, Juice
 2. Mexican
   - Mexican, Regional, Tex-Mex
 3. Asian
@@ -525,24 +672,26 @@ calculateRcuisine <- function(dataset) {
     }
   }
   # Transform Rcuisine to calculated values as factor
-  dataset$Rcuisine <- as.factor(dataset$cuisine)
+  dataset[,2] <- as.factor(dataset$cuisine)
   return(dataset)
 }
 ```
 
 ```{r}
-# Calculate new RCuisine types
+# Calculate new Rcuisine types
 chefmozcuisine_df <- calculateRcuisine(chefmozcuisine_df)
 
 # Drop unnecessary column
 chefmozcuisine_df <- chefmozcuisine_df[,c("placeID", "Rcuisine")]
 ```
 
-#### chefmozhours4
+#### Dataset 3: chefmozhours4
 
-#### chefmozparking
+#### Dataset 4: chefmozparking
 
-#### geoplaces2
+As discussed in Data Undestarnding, no treatment will be applied to this dataset.
+
+#### Dataset 5: geoplaces2
 
 Select only relevant features.
 Treat missing hours and create relevant features.
@@ -606,9 +755,9 @@ for(placeID in unique(restaurant_df$placeID)) {
 geoplaces2_df <- restaurant_df
 ```
 
-#### usercuisine
+#### Dataset 6: usercuisine
 
-As discussed in chefmozcuisine section, a treatment to Rcuisine will be applied.
+As discussed in Data Understanding section, a treatment to Rcuisine will be applied.
 
 ```{r}
 sprintf("Rcuisine has %d levels.", nlevels(usercuisine_df$Rcuisine))
@@ -620,9 +769,30 @@ usercuisine_df <- calculateRcuisine(usercuisine_df)
 usercuisine_df <- usercuisine_df[,c("userID", "Rcuisine")]
 ```
 
-#### userpayment
+#### Dataset 7: userpayment
 
-#### userprofile
+As discussed in Data Understanding, a treatment to Ucuisine will be applied.
+
+This feature started with the following information:
+```{r}
+summary(userpayment_df$Upayment)
+```
+
+So it's expected that it ends with:
+  - 3 (American_Express) + 22 (bank_debit_cards) + 17 (VISA) + 4 (MasterCard-Eurocard) = 46 (Card)
+  - 131 (Cash)
+
+```{r}
+# Calculate new Upayment types
+userpayment_df <- calculateRpayment(userpayment_df)
+
+# Drop unnecessary column
+userpayment_df <- userpayment_df[,c("userID", "Upayment")]
+
+summary(userpayment_df$Upayment)
+```
+
+#### Dataset 8: userprofile
 
 ```{r}
 sprintf("As seen in Data Understanding phase, userprofile dataset has %d missing values. The columns with missing values are 'smoker', 'ambience', 'transport', 'marital_status', 'hijos', 'activity' and 'budget'.", sum(userprofile_df == "?"))
@@ -741,7 +911,9 @@ userprofile_df <- imputation("value", userprofile_df, "budget", Value=budget_mod
 print(summary(userprofile_df$budget))
 ```
 
-#### rating_final
+#### Dataset 9: rating_final
+
+As discussed in Data Understanding, this dataset doesn't need any treatment.
 
 To be able to use all the relevant features in the model, we need to create a dataframe with them.
 ```{r}
