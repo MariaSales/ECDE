@@ -69,8 +69,8 @@ Then we want to analyze the imported data by visualizing important statistics ab
 #### Dataset 1: chefmozaccepts
 
 This dataset contains information about the payment methods that restaurants accept. It contains the following features:
-- placeID: corresponds to the restaurant id;
-- Rpayment: corresponds to the type of payment that the restaurant in the matching row accepts. This is a nominal feature with 12 levels.
+<li>placeID: corresponds to the restaurant id;</li>
+<li>Rpayment: corresponds to the type of payment that the restaurant in the matching row accepts. This is a nominal feature with 12 levels.</li>
 From this analysis we conclude that this dataset has no missing values, but a treatment to Rpayment is necessary to reduce the number of levels of this feature.
 ```{r}
 # Columns
@@ -94,8 +94,8 @@ sprintf("Rpayment has %d levels.", nlevels(chefmozaccepts_df$Rpayment))
 #### Dataset 2: chefmozcuisine
 
 This dataset contains information about the type of cuisine of the restaurants It contains the following features:
-- placeID: corresponds to the restaurant id;
-- Rcuisine: corresponds to the type of cuisine of the restaurant. This is a nominal feature with 59 levels.
+<li>placeID: corresponds to the restaurant id;</li>
+<li>Rcuisine: corresponds to the type of cuisine of the restaurant. This is a nominal feature with 59 levels.</li>
 From this analysis we conclude that this dataset has no missing values, but a treatment to Rcuisine is necessary to reduce the number of levels of this feature.
 ```{r}
 # Columns
@@ -119,9 +119,9 @@ sprintf("Rcuisine has %d levels.", nlevels(chefmozcuisine_df$Rcuisine))
 #### Dataset 3: chefmozhours4
 
 This dataset contains information about the hours and days that each restaurant is open/closed. It contains the following features:
-- placeID: corresponds to the restaurant id;
-- hours: corresponds to the hours that the restaurant is open/closed. This is a nominal feature with 273 levels;
-- days: corresponds to the day of the week that the restaurant is open/closed. This is a nominal feature with 3 levels.
+<li>placeID: corresponds to the restaurant id;</li>
+<li>hours: corresponds to the hours that the restaurant is open/closed. This is a nominal feature with 273 levels;</li>
+<li>days: corresponds to the day of the week that the restaurant is open/closed. This is a nominal feature with 3 levels.</li>
 From this analysis we conclude that this dataset has no missing values, but a treatment to hours is necessary to reduce the number of levels of this feature.
 ```{r}
 # Columns
@@ -147,8 +147,8 @@ sprintf("days has %d levels.", nlevels(chefmozhours4_df$days))
 #### Dataset 4: chefmozparking
 
 This dataset contains information about the parking that each restaurant offers. It contains the following features:
-- placeID: corresponds to the restaurant id;
-- parking_lot: corresponds to the type of parking. This is a nominal feature with 7 levels.
+<li>placeID: corresponds to the restaurant id;</li>
+<li>parking_lot: corresponds to the type of parking. This is a nominal feature with 7 levels.</li>
 From this analysis we conclude that this dataset has no missing values, and no treatment is necessary.
 ```{r}
 # Columns
@@ -184,33 +184,33 @@ drawBarplot(chefmozparking_df, parking_lot, title, xlab, ylab, feature)
 #### Dataset 5: geoplaces2
 
 This dataset contains generic information about each restaurant. It contains the following features:
-- placeID: corresponds to the restaurant id;
-- latitude and longitude: correspond to the geospatial coordinates of the restaurant. These are both numeric features;
-- the_geom_meter: geospatial variable. This is a nominal feature with 130 levels;
-- name: name of the restaurant;
-- address: address of the restaurant. This is a nominal feature with 100 levels and 27 missing values;
-- city: city of the restaurant. This is a nominal feature with 17 levels and 18 missing values;
-- state: state of the restaurant. This is a nominal feature with 13 levels and 18 missing values;
-- country: country of the restaurant. This is a nominal feature with 3 levels and 28 missing values;
-- fax: fax of the restaurant. This is a numeric feature with 130 missing values;
-- zip: zip code of the restaurant. This is a numeric feature with 35 levels and 74 missing values;
-- alcohol: indicates the type of bar service that the restaurant provides. This is a nominal feature with 3 levels;
-- smoking_area: indicates the type of smoking area that the restaurant provides. This is a nominal feature with 5 levels;
-- dress_code: dress code allowed in the restaurant. This is a nominal feature with 3 levels;
-- accessibility: indicates the accessibility that the restaurant  provides for disabled people. This is a nominal feature with 3 levels;
-- price: budget range of the restaurant. This is a nominal feature with 3 levels;
-- url: url of the restaurant. Contains 116 missing values;
-- Rambience: type of ambience of the restaurant. This is a nominal feature with 2 levels;
-- franchise: indicates if the restaurant is a franchise or not. This is a nominal feature with 2 levels;
-- area: indicates the type of the area of the restaurant. This is a nominal feature with 2 levels;
-- other_services: indicates if the restaurant offers any additional service or not. This is a nominal feature with 3 levels.
+<li>placeID: corresponds to the restaurant id;</li>
+<li>latitude and longitude: correspond to the geospatial coordinates of the restaurant. These are both numeric features;</li>
+<li>the_geom_meter: geospatial variable. This is a nominal feature with 130 levels;</li>
+<li>name: name of the restaurant;</li>
+<li>address: address of the restaurant. This is a nominal feature with 100 levels and 27 missing values;</li>
+<li>city: city of the restaurant. This is a nominal feature with 17 levels and 18 missing values;</li>
+<li>state: state of the restaurant. This is a nominal feature with 13 levels and 18 missing values;</li>
+<li>country: country of the restaurant. This is a nominal feature with 3 levels and 28 missing values;</li>
+<li>fax: fax of the restaurant. This is a numeric feature with 130 missing values;</li>
+<li>zip: zip code of the restaurant. This is a numeric feature with 35 levels and 74 missing values;</li>
+<li>alcohol: indicates the type of bar service that the restaurant provides. This is a nominal feature with 3 levels;</li>
+<li>smoking_area: indicates the type of smoking area that the restaurant provides. This is a nominal feature with 5 levels;</li>
+<li>dress_code: dress code allowed in the restaurant. This is a nominal feature with 3 levels;</li>
+<li>accessibility: indicates the accessibility that the restaurant  provides for disabled people. This is a nominal feature with 3 levels;</li>
+<li>price: budget range of the restaurant. This is a nominal feature with 3 levels;</li>
+<li>url: url of the restaurant. Contains 116 missing values;</li>
+<li>Rambience: type of ambience of the restaurant. This is a nominal feature with 2 levels;</li>
+<li>franchise: indicates if the restaurant is a franchise or not. This is a nominal feature with 2 levels;</li>
+<li>area: indicates the type of the area of the restaurant. This is a nominal feature with 2 levels;</li>
+<li>other_services: indicates if the restaurant offers any additional service or not. This is a nominal feature with 3 levels.</li>
 
 From this analysis we conclude that this dataset needs the following treatments:
-- drop the_geom_meter. The location of the restaurant will be given by the city
-- discover the missing cities with the given latitute and longitude, and then drop these coordinates
-- drop the name of the restaurant, because naming doesn't influence ratings
-- drop address, state, fax and zip, because these features don't influence ratings 
-- drop country, because all restaurants are from Mexico (irrelevant feature)
+<li>drop the_geom_meter. The location of the restaurant will be given by the city</li>
+<li>discover the missing cities with the given latitute and longitude, and then drop these coordinates</li>
+<li>drop the name of the restaurant, because naming doesn't influence ratings</li>
+<li>drop address, state, fax and zip, because these features don't influence ratings </li>
+<li>drop country, because all restaurants are from Mexico (irrelevant feature)</li>
 
 Additionaly, we conclude that in total there are 130 unique restaurants.
 
@@ -240,91 +240,316 @@ An interesting analysis is to try to understand if some of the given restaurant 
 ratings_restaurants <- merge(rating_final_df, geoplaces2_df, by = "placeID")
 ```
 
+```{r}
+# Draw connected scatterplot
+drawConnectedScatterplot <- function(total, rating, service, food, title, xlab, ylim, at, lab) {
+  # Make a basic graph
+  plot(rating~total, type="b", main=title, bty="l", xlab=xlab, ylab="Mean Rating", col=rgb(0.2,0.4,0.1,0.7), lwd=3, pch=17, ylim=ylim, xaxt='n')
+  lines(service~total , col=rgb(0.8,0.4,0.1,0.7) , lwd=3 , pch=18 , type="b" )
+  lines(food~total , col=rgb(0.6,0.3,0.2,0.7) , lwd=3 , pch=19 , type="b" )
+  axis(1, at = at, lab = lab)
+  
+  # Add a legend
+  legend("bottomright", legend = c("Combined", "Service", "Food"), col = c(rgb(0.2,0.4,0.1,0.7), rgb(0.8,0.4,0.1,0.7), rgb(0.6,0.3,0.2,0.7)), pch = c(17,18,19), bty = "n", pt.cex = 2, cex = 1.2, text.col = "black", horiz = F , inset = c(0.1, 0.1))
+}
+
+# Calculate mean rating
+calculateMeanRating <- function(feature, value, rating) {
+  mean_rating <- mean(ratings_restaurants[which(ratings_restaurants[, feature] == value), rating])
+}
+```
 ##### Feature 5.1: alcohol
 
 ```{r}
-# Calculate mean rating per each type of price for general rating
-mean_low_rating <- mean(ratings_restaurants[which(ratings_restaurants$alcohol == "No_Alcohol_Served"),]$rating)
-mean_medium_rating <- mean(ratings_restaurants[which(ratings_restaurants$alcohol == "Full_Bar"),]$rating)
-mean_high_rating <- mean(ratings_restaurants[which(ratings_restaurants$alcohol == "Wine-Beer"),]$rating)
+# Calculate mean rating per each type of alcohol for general rating
+mean_no_alcohol_rating <- calculateMeanRating("alcohol", "No_Alcohol_Served", "rating")
+mean_wine_rating <- calculateMeanRating("alcohol", "Wine-Beer", "rating")
+mean_full_bar_rating <- calculateMeanRating("alcohol", "Full_Bar", "rating") 
 
-# Calculate mean rating per each type of price for service rating
-mean_low_service <- mean(ratings_restaurants[which(ratings_restaurants$alcohol == "No_Alcohol_Served"),]$service)
-mean_medium_service <- mean(ratings_restaurants[which(ratings_restaurants$alcohol == "Full_Bar"),]$service)
-mean_high_service <- mean(ratings_restaurants[which(ratings_restaurants$alcohol == "Wine-Beer"),]$service)
+# Calculate mean rating per each type of alcohol for service rating
+mean_no_alcohol_service <- calculateMeanRating("alcohol", "No_Alcohol_Served", "service_rating")
+mean_wine_service <- calculateMeanRating("alcohol", "Wine-Beer", "service_rating")
+mean_full_bar_service <- calculateMeanRating("alcohol", "Full_Bar", "service_rating")
 
-# Calculate mean rating per each type of price for food rating
-mean_low_food <- mean(ratings_restaurants[which(ratings_restaurants$alcohol == "No_Alcohol_Served"),]$food)
-mean_medium_food <- mean(ratings_restaurants[which(ratings_restaurants$alcohol == "Full_Bar"),]$food)
-mean_high_food <- mean(ratings_restaurants[which(ratings_restaurants$alcohol == "Wine-Beer"),]$food)
+# Calculate mean rating per each type of alcohol for food rating
+mean_no_alcohol_food <- calculateMeanRating("alcohol", "No_Alcohol_Served", "food_rating")
+mean_wine_food <- calculateMeanRating("alcohol", "Wine-Beer", "food_rating")
+mean_full_bar_food <- calculateMeanRating("alcohol", "Full_Bar", "food_rating")
 
-# Create data:
-budget <- c(0, 1, 2)
-rating <- c(mean_low_rating, mean_medium_rating, mean_high_rating)
-service <- c(mean_low_service, mean_medium_service, mean_high_service)
-food <- c(mean_low_food, mean_medium_food, mean_high_food)
+# Define variables
+total <- c(0, 1, 2)
+rating <- c(mean_no_alcohol_rating, mean_wine_rating, mean_full_bar_rating)
+service <- c(mean_no_alcohol_service, mean_wine_service, mean_full_bar_service)
+food <- c(mean_no_alcohol_food, mean_wine_food, mean_full_bar_food)
+title <- "Mean rating per alcohol"
+xlab <- "Alcohol"
+ylim <-c (1.0, 1.3)
+lab <- c("No_Alcohol_Served", "Wine-Beer", "Full_Bar")
 
-# Make a basic graph
-plot(rating~budget, type="b", main="Mean rating per alcohol", bty="l", xlab="Alcohol", ylab="Mean rating", col=rgb(0.2,0.4,0.1,0.7), lwd=3, pch=17 ,ylim=c(1.0, 1.3))
-lines(service~budget , col=rgb(0.8,0.4,0.1,0.7) , lwd=3 , pch=18 , type="b" )
-lines(food~budget , col=rgb(0.6,0.3,0.2,0.7) , lwd=3 , pch=19 , type="b" )
-
-# Add a legend
-legend("bottomright", legend = c("Combined", "Service", "Food"), col = c(rgb(0.2,0.4,0.1,0.7), rgb(0.8,0.4,0.1,0.7), rgb(0.6,0.3,0.2,0.7)), pch = c(17,18,19), bty = "n", pt.cex = 2, cex = 1.2, text.col = "black", horiz = F , inset = c(0.1, 0.1))
+# Draw graph
+drawConnectedScatterplot(total, rating, service, food, title, xlab, ylim, 0:2, lab)
 ```
 
-##### Feature 5.2: smoking_are
+##### Feature 5.2: smoking_area
+
+```{r}
+# Calculate mean rating per each type of smoking_area for general rating
+mean_none_rating <- calculateMeanRating("smoking_area", "none", "rating")
+mean_not_rating <- calculateMeanRating("smoking_area", "not permitted", "rating")
+mean_bar_rating <- calculateMeanRating("smoking_area", "only at bar", "rating")
+mean_permitted_rating <- calculateMeanRating("smoking_area", "permitted", "rating")
+mean_section_rating <- calculateMeanRating("smoking_area", "section", "rating")
+
+# Calculate mean rating per each type of smoking_area for service rating
+mean_none_service <- calculateMeanRating("smoking_area", "none", "service_rating")
+mean_not_service <- calculateMeanRating("smoking_area", "not permitted", "service_rating")
+mean_bar_service <- calculateMeanRating("smoking_area", "only at bar", "service_rating")
+mean_permitted_service <- calculateMeanRating("smoking_area", "permitted", "service_rating")
+mean_section_service <- calculateMeanRating("smoking_area", "section", "service_rating")
+
+# Calculate mean rating per each type of smoking_area for food rating
+mean_none_food <- calculateMeanRating("smoking_area", "none", "food_rating")
+mean_not_food <- calculateMeanRating("smoking_area", "not permitted", "food_rating")
+mean_bar_food <- calculateMeanRating("smoking_area", "only at bar", "food_rating")
+mean_permitted_food <- calculateMeanRating("smoking_area", "permitted", "food_rating")
+mean_section_food <- calculateMeanRating("smoking_area", "section", "food_rating")
+
+# Define variables
+total <- c(0, 1, 2, 3, 4)
+rating <- c(mean_none_rating, mean_not_rating, mean_bar_rating, mean_permitted_rating, mean_section_rating)
+service <- c(mean_none_service, mean_not_service, mean_bar_service, mean_permitted_service, mean_section_service)
+food <- c(mean_none_food, mean_not_food, mean_bar_food, mean_permitted_food, mean_section_food)
+title <- "Mean rating per smoking area"
+xlab <- "Smoking Area"
+ylim <-c (0.8, 1.4)
+lab <- c("None", "Not Permitted", "Only at bar", "Permitted", "Section")
+
+# Draw graph
+drawConnectedScatterplot(total, rating, service, food, title, xlab, ylim, 0:4, lab)
+```
 
 ##### Feature 5.3: dress_code
 
+```{r}
+# Calculate mean rating per each type of dress_code for general rating
+mean_casual_rating <- calculateMeanRating("dress_code", "casual", "rating")
+mean_formal_rating <- calculateMeanRating("dress_code", "formal", "rating")
+mean_informal_rating <- calculateMeanRating("dress_code", "informal", "rating")
+
+# Calculate mean rating per each type of dress_code for service rating
+mean_casual_service <- calculateMeanRating("dress_code", "casual", "service_rating")
+mean_formal_service <- calculateMeanRating("dress_code", "formal", "service_rating")
+mean_informal_service <- calculateMeanRating("dress_code", "informal", "service_rating")
+
+# Calculate mean rating per each type of dress_code for food rating
+mean_casual_food <- calculateMeanRating("dress_code", "casual", "food_rating")
+mean_formal_food <- calculateMeanRating("dress_code", "formal", "food_rating")
+mean_informal_food <- calculateMeanRating("dress_code", "informal", "food_rating")
+
+# Define variables
+total <- c(0, 1, 2)
+rating <- c(mean_casual_rating, mean_formal_rating, mean_informal_rating)
+service <- c(mean_casual_service, mean_formal_service, mean_informal_service)
+food <- c(mean_casual_food, mean_formal_food, mean_informal_food)
+title <- "Mean rating per dress type"
+xlab <- "Dress type"
+ylim <-c (0.8, 2.0)
+lab <- c("Casual", "Formal", "Informal")
+
+# Draw graph
+drawConnectedScatterplot(total, rating, service, food, title, xlab, ylim, 0:2, lab)
+```
+
 ##### Feature 5.4: accessibility
+
+```{r}
+# Calculate mean rating per each type of accessibility for general rating
+mean_completely_rating <- calculateMeanRating("accessibility", "completely", "rating")
+mean_no_accessibility_rating <- calculateMeanRating("accessibility", "no_accessibility", "rating")
+mean_partially_rating <- calculateMeanRating("accessibility", "partially", "rating")
+
+# Calculate mean rating per each type of accessibility for service rating
+mean_completely_service <- calculateMeanRating("accessibility", "completely", "service_rating")
+mean_no_accessibility_service <- calculateMeanRating("accessibility", "no_accessibility", "service_rating")
+mean_partially_service <- calculateMeanRating("accessibility", "partially", "service_rating")
+
+# Calculate mean rating per each type of accessibility for food rating
+mean_completely_food <- calculateMeanRating("accessibility", "completely", "food_rating")
+mean_no_accessibility_food <- calculateMeanRating("accessibility", "no_accessibility", "food_rating")
+mean_partially_food <- calculateMeanRating("accessibility", "partially", "food_rating")
+
+# Define variables
+total <- c(0, 1, 2)
+rating <- c(mean_completely_rating, mean_no_accessibility_rating, mean_partially_rating)
+service <- c(mean_completely_service, mean_no_accessibility_service, mean_partially_service)
+food <- c(mean_completely_food, mean_no_accessibility_food, mean_partially_food)
+title <- "Mean rating per accessibily"
+xlab <- "Accessibility"
+ylim <-c (0.8, 1.4)
+lab <- c("Completely", "No accessibility", "Partially")
+
+# Draw graph
+drawConnectedScatterplot(total, rating, service, food, title, xlab, ylim, 0:2, lab)
+```
 
 ##### Feature 5.5: price
 
 From the following chart we can conclude that medium and high price restaurants have better ratings than lower price restaurants.
 ```{r}
 # Calculate mean rating per each type of price for general rating
-mean_low_rating <- mean(ratings_restaurants[which(ratings_restaurants$price == "low"),]$rating)
-mean_medium_rating <- mean(ratings_restaurants[which(ratings_restaurants$price == "medium"),]$rating)
-mean_high_rating <- mean(ratings_restaurants[which(ratings_restaurants$price == "high"),]$rating)
+mean_low_rating <- calculateMeanRating("price", "low", "rating")
+mean_medium_rating <- calculateMeanRating("price", "medium", "rating")
+mean_high_rating <- calculateMeanRating("price", "high", "rating")
 
 # Calculate mean rating per each type of price for service rating
-mean_low_service <- mean(ratings_restaurants[which(ratings_restaurants$price == "low"),]$service)
-mean_medium_service <- mean(ratings_restaurants[which(ratings_restaurants$price == "medium"),]$service)
-mean_high_service <- mean(ratings_restaurants[which(ratings_restaurants$price == "high"),]$service)
+mean_low_service <- calculateMeanRating("price", "low", "service_rating")
+mean_medium_service <- calculateMeanRating("price", "medium", "service_rating")
+mean_high_service <- calculateMeanRating("price", "high", "service_rating")
 
 # Calculate mean rating per each type of price for food rating
-mean_low_food <- mean(ratings_restaurants[which(ratings_restaurants$price == "low"),]$food)
-mean_medium_food <- mean(ratings_restaurants[which(ratings_restaurants$price == "medium"),]$food)
-mean_high_food <- mean(ratings_restaurants[which(ratings_restaurants$price == "high"),]$food)
+mean_low_food <- calculateMeanRating("price", "low", "food_rating")
+mean_medium_food <- calculateMeanRating("price", "medium", "food_rating")
+mean_high_food <- calculateMeanRating("price", "high", "food_rating")
 
-# Create data:
-budget <- c(0, 1, 2)
+# Define variables
+total <- c(0, 1, 2)
 rating <- c(mean_low_rating, mean_medium_rating, mean_high_rating)
 service <- c(mean_low_service, mean_medium_service, mean_high_service)
 food <- c(mean_low_food, mean_medium_food, mean_high_food)
+title <- "Mean rating per price"
+xlab <- "Price"
+ylim <-c (0.9, 1.3)
+lab <- c("low", "medium", "high")
 
-# Make a basic graph
-plot(rating~budget, type="b", main="Mean rating per price", bty="l", xlab="Price", ylab="Mean rating", col=rgb(0.2,0.4,0.1,0.7), lwd=3, pch=17 ,ylim=c(0.8, 1.4))
-lines(service~budget , col=rgb(0.8,0.4,0.1,0.7) , lwd=3 , pch=18 , type="b" )
-lines(food~budget , col=rgb(0.6,0.3,0.2,0.7) , lwd=3 , pch=19 , type="b" )
-
-# Add a legend
-legend("bottomright", legend = c("Combined", "Service", "Food"), col = c(rgb(0.2,0.4,0.1,0.7), rgb(0.8,0.4,0.1,0.7), rgb(0.6,0.3,0.2,0.7)), pch = c(17,18,19), bty = "n", pt.cex = 2, cex = 1.2, text.col = "black", horiz = F , inset = c(0.1, 0.1))
+# Draw graph
+drawConnectedScatterplot(total, rating, service, food, title, xlab, ylim, 0:2, lab)
 ```
+
 ##### Feature 5.6: Rambience
+
+```{r}
+# Calculate mean rating per each type of Rambience for general rating
+mean_familiar_rating <- calculateMeanRating("Rambience", "familiar", "rating")
+mean_quiet_rating <- calculateMeanRating("Rambience", "quiet", "rating")
+
+# Calculate mean rating per each type of Rambience for service rating
+mean_familiar_service <- calculateMeanRating("Rambience", "familiar", "service_rating")
+mean_quiet_service <- calculateMeanRating("Rambience", "quiet", "service_rating")
+
+# Calculate mean rating per each type of Rambience for food rating
+mean_familiar_food <- calculateMeanRating("Rambience", "familiar", "food_rating")
+mean_quiet_food <- calculateMeanRating("Rambience", "quiet", "food_rating")
+
+# Define variables
+total <- c(0, 1)
+rating <- c(mean_familiar_rating, mean_quiet_rating)
+service <- c(mean_familiar_service, mean_quiet_service)
+food <- c(mean_familiar_food, mean_quiet_food)
+title <- "Mean rating per ambience"
+xlab <- "Ambience"
+ylim <-c (0.8, 1.3)
+lab <- c("Familiar", "Quiet")
+
+# Draw graph
+drawConnectedScatterplot(total, rating, service, food, title, xlab, ylim, 0:1, lab)
+```
 
 ##### Feature 5.7: franchise
 
+```{r}
+# Calculate mean rating per each type of franchise for general rating
+mean_f_rating <- calculateMeanRating("franchise", "f", "rating")
+mean_t_rating <- calculateMeanRating("franchise", "t", "rating")
+
+# Calculate mean rating per each type of franchise for service rating
+mean_f_service <- calculateMeanRating("franchise", "f", "service_rating")
+mean_t_service <- calculateMeanRating("franchise", "t", "service_rating")
+
+# Calculate mean rating per each type of franchise for food rating
+mean_f_food <- calculateMeanRating("franchise", "f", "food_rating")
+mean_t_food <- calculateMeanRating("franchise", "t", "food_rating")
+
+# Define variables
+total <- c(0, 1)
+rating <- c(mean_f_rating, mean_t_rating)
+service <- c(mean_f_service, mean_t_service)
+food <- c(mean_f_food, mean_t_food)
+title <- "Mean rating per franchise"
+xlab <- "Franchise"
+ylim <-c (0.8, 1.3)
+lab <- c("No", "Yes")
+
+# Draw graph
+drawConnectedScatterplot(total, rating, service, food, title, xlab, ylim, 0:1, lab)
+```
+
 ##### Feature 5.8: area
 
+```{r}
+# Calculate mean rating per each type of area for general rating
+mean_closed_rating <- calculateMeanRating("area", "closed", "rating")
+mean_open_rating <- calculateMeanRating("area", "open", "rating")
+
+# Calculate mean rating per each type of area for service rating
+mean_closed_service <- calculateMeanRating("area", "closed", "service_rating")
+mean_open_service <- calculateMeanRating("area", "open", "service_rating")
+
+# Calculate mean rating per each type of area for food rating
+mean_closed_food <- calculateMeanRating("area", "closed", "food_rating")
+mean_open_food <- calculateMeanRating("area", "open", "food_rating")
+
+# Define variables
+total <- c(0, 1)
+rating <- c(mean_closed_rating, mean_open_rating)
+service <- c(mean_closed_service, mean_open_service)
+food <- c(mean_closed_food, mean_open_food)
+title <- "Mean rating per area"
+xlab <- "Area"
+ylim <-c (0.8, 1.3)
+lab <- c("Closed", "Oper")
+
+# Draw graph
+drawConnectedScatterplot(total, rating, service, food, title, xlab, ylim, 0:1, lab)
+```
+
 ##### Feature 5.9: other_services
+
+```{r}
+# Calculate mean rating per each type of other_services for general rating
+mean_Internet_rating <- calculateMeanRating("other_services", "Internet", "rating")
+mean_none_rating <- calculateMeanRating("other_services", "none", "rating")
+mean_variety_rating <- calculateMeanRating("other_services", "variety", "rating")
+
+# Calculate mean rating per each type of other_services for service rating
+mean_Internet_service <- calculateMeanRating("other_services", "Internet", "service_rating")
+mean_none_service <- calculateMeanRating("other_services", "none", "service_rating")
+mean_variety_service <- calculateMeanRating("other_services", "variety", "service_rating")
+
+# Calculate mean rating per each type of other_services for food rating
+mean_Internet_food <- calculateMeanRating("other_services", "Internet", "food_rating")
+mean_nonefood <- calculateMeanRating("other_services", "none", "food_rating")
+mean_variety_food <- calculateMeanRating("other_services", "variety", "food_rating")
+
+# Define variables
+total <- c(0, 1, 2)
+rating <- c(mean_Internet_rating, mean_none_rating, mean_variety_rating)
+service <- c(mean_Internet_service, mean_none_service, mean_variety_service)
+food <- c(mean_Internet_food, mean_none_food, mean_variety_food)
+title <- "Mean rating per other services"
+xlab <- "Other service"
+ylim <-c (1.0, 1.6)
+lab <- c("Internet", "None", "Variety")
+
+# Draw graph
+drawConnectedScatterplot(total, rating, service, food, title, xlab, ylim, 0:2, lab)
+
+```
 
 #### Dataset 6: usercuisine
 
 This dataset contains information about the preferred cuisine(s) type(s) for each user. It contains the following features:
-- userID: corresponds to the user id;
-- Rcuisine: corresponds to the type(s) of cuisine(s) that the user prefers. This is a nominal feature with 103 levels.
+<li>userID: corresponds to the user id;</li>
+<li>Rcuisine: corresponds to the type(s) of cuisine(s) that the user prefers. This is a nominal feature with 103 levels.</li>
 From this analysis we conclude that this dataset has no missing values, but a treatment to Rcuisine is necessary to reduce the number of levels of this feature. This treatment should match the one done to Rcuisine from chefmozcuisine.
 ```{r}
 # Columns
@@ -348,8 +573,8 @@ sprintf("Rcuisine has %d levels.", nlevels(usercuisine_df$Rcuisine))
 #### Dataset 7: userpayment
 
 This dataset contains information about the payment methods that users prefers. It contains the following features:
-- userID: corresponds to the user id;
-- Upayment: corresponds to the type of payment that the user prefers. This is a nominal feature with 5 levels.
+<li>userID: corresponds to the user id;</li>
+<li>Upayment: corresponds to the type of payment that the user prefers. This is a nominal feature with 5 levels.</li>
 From this analysis we conclude that this dataset has no missing values, but a treatment to Upayment is necessary to reduce the number of levels of this feature, and it should match the treatment made to chefmozaccepts.
 ```{r}
 # Columns
@@ -385,35 +610,35 @@ drawBarplot(userpayment_df, upayment, title, xlab, ylab, feature)
 #### Dataset 8: userprofile
 
 This dataset contains information about the users that rated the restaurants. It contains the following features:
-- userID: corresponds to the user id;
-- latitude and longitude: correspond to the geospatial coordinates of the user These are both numeric features;
-- smoker: indicates whether the user is smoker or not. This is a nominal feature with 2 levels and 3 missing values;
-- drink_level: indicates the drink level of the user. This is a nominal feature with 3 levels;
-- dress_preference: indicates the user's dress preference. This is a nominal feature with 4 levels and 5 missing values;
-- ambience: indicates the ambience that the user prefers. This is a nominal feature with 3 levels and 6 missing values;
-- transport: indicates the kind of transportation that the user prefers. This is a nominal feature with 3 levels and 7 missing values;
-- marital_status: indicates the marital status of the user. This is a nominal feature with 3 levels and 4 missing values;
-- hijos: indicates wheter the user has kids or not. This is a nominal feature with 3 levels and 11 missing values;
-- birth_year: user birth year. This is a numeric feature.
-- interest: indicates user's interest. This is a nominal feature with 5 levels;
-- personality: indicates user's personality. This is a nominal feature with 4 levels;
-- religion: indicates user's religion. This is a nominal feature with 5 levels;
-- activity: indicates user's activity. This is a nominal feature with 4 levels and 7 missing values;
-- color: indicates user's color preference. This is a nominal feature with 8 levels;
-- weight: user's weight (numeric);
-- budget: indicates user's budget. This is a nominal feature with 3 levels and 7 missing values;
-- height: user's height (numeric).
+<li>userID: corresponds to the user id;</li>
+<li>latitude and longitude: correspond to the geospatial coordinates of the user These are both numeric features;</li>
+<li>smoker: indicates whether the user is smoker or not. This is a nominal feature with 2 levels and 3 missing values;</li>
+<li>drink_level: indicates the drink level of the user. This is a nominal feature with 3 levels;</li>
+<li>dress_preference: indicates the user's dress preference. This is a nominal feature with 4 levels and 5 missing values;</li>
+<li>ambience: indicates the ambience that the user prefers. This is a nominal feature with 3 levels and 6 missing values;</li>
+<li>transport: indicates the kind of transportation that the user prefers. This is a nominal feature with 3 levels and 7 missing values;</li>
+<li>marital_status: indicates the marital status of the user. This is a nominal feature with 3 levels and 4 missing values;</li>
+<li>hijos: indicates wheter the user has kids or not. This is a nominal feature with 3 levels and 11 missing values;</li>
+<li>birth_year: user birth year. This is a numeric feature;</li>
+<li>interest: indicates user's interest. This is a nominal feature with 5 levels;</li>
+<li>personality: indicates user's personality. This is a nominal feature with 4 levels;</li>
+<li>religion: indicates user's religion. This is a nominal feature with 5 levels;</li>
+<li>activity: indicates user's activity. This is a nominal feature with 4 levels and 7 missing values;</li>
+<li>color: indicates user's color preference. This is a nominal feature with 8 levels;</li>
+<li>weight: user's weight (numeric);</li>
+<li>budget: indicates user's budget. This is a nominal feature with 3 levels and 7 missing values;</li>
+<li>height: user's height (numeric).</li>
 
 From this analysis we conclude that this dataset needs the following treatments:
-- discover the user cities to match the restaurant cities with the given latitute and longitude, and then drop these coordinates
-- treat smoker missing values
-- treat dress_preference missing values
-- treat ambience missing values
-- treat transport missing values
-- treat marital_status missing values
-- treat hijos missing values
-- treat activity missing values
-- treat budget missing values
+<li>discover the user cities to match the restaurant cities with the given latitute and longitude, and then drop these coordinates</li>
+<li>treat smoker missing values</li>
+<li>treat dress_preference missing values</li>
+<li>treat ambience missing values</li>
+<li>treat transport missing values</li>
+<li>treat marital_status missing values</li>
+<li>treat hijos missing values</li>
+<li>treat activity missing values</li>
+<li>treat budget missing values</li>
 
 Additionaly, we conclude that in total there are 138 unique users.
 ```{r}
