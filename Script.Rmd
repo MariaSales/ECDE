@@ -17,6 +17,20 @@ This dataset contains information about consumers, restaurants, and ratings that
 The main purpose of this project is to analyze the given data and predict the missing ratings.
 This project follows the CRISP-DM methodology and makes use of the R language.
 
+#### Library installation
+
+In order to start working and make use of already existing R libraries, it's necessary to import them.
+
+```{r echo=TRUE}
+install.packages("rminer")
+library(rminer)
+library(data.table)
+install.packages("ggmap")
+library(ggmap)
+library(caTools)
+library(ggplot2)
+```
+
 <br>
 
 ## 1. Business Undestanding
@@ -31,8 +45,7 @@ A study will be executed starting with a given varied range of characteristics o
 
 ### 1.3 Determine data mining goals
 
-The challenge for this project is the analysis and transformation of the information, using several functions and libraries of the R language, and also recurring to external APIs, in order to obtain the necessary information to predict the missing classifications.
-In order to achieve this, supervised learning algorithms will be used and adapted to the proposed problem. These algorithms will be compared and the best performing ones will be selected. 
+The challenge for this project is the analysis and transformation of the information, using several functions and libraries of the R language, and also recurring to external APIs, in order to obtain the necessary information to predict the missing ratings. To achieve this, supervised learning algorithms will be used and adapted to the proposed problem. These algorithms will be compared and the best performing ones will be selected. 
 
 ### 1.4 Produce project plan
 
@@ -41,18 +54,6 @@ This project will follow the CRISP-DM methodology, starting by understanding the
 <br>
 
 ## 2. Data Understanding
-
-#### Library installation
-
-In order to start working and make use of already existing libraries, its necessary to import them.
-
-```{r echo=TRUE}
-install.packages("rminer")
-library(rminer)
-library(data.table)
-install.packages("ggmap")
-library(ggmap)
-```
 
 The first step to start analyzing the provided data is to read all the .csv files and store them in separate datasets.
 
@@ -72,7 +73,7 @@ userprofile_df <- read.csv("userprofile.csv")
 rating_final_df <- read.csv("rating_final.csv")
 ```
 
-After importing all the necessary data, we need to analyze it by visualizing some important information and statistics. During this phase, we decided to iterate over the substepts data gathering, descriptive analysis, exploratory analysis and data quality verification for each of the given .csv files.
+After importing all the necessary data, it's necessary analyze it by visualizing some important information and statistics. During this phase, we decided to iterate over the steps "Data gathering", "Descriptive analysis", "Exploratory analysis" and "Data quality verification" for each of the given .csv files.
 
 <br>
 
@@ -80,7 +81,7 @@ After importing all the necessary data, we need to analyze it by visualizing som
 
 This dataset contains information about the payment methods that restaurants accept. It contains the following features:
 <li>placeID: corresponds to the restaurant id;</li>
-<li>Rpayment: corresponds to the type of payment that the restaurant in the matching row accepts. This is a nominal feature with 12 levels.</li>
+<li>Rpayment: corresponds to the type of payment that the restaurant accepts. This is a nominal feature with 12 levels, and no missing values.</li>
 
 ```{r}
 # Columns
@@ -217,7 +218,7 @@ drawBarplot <- function(dataframe, type, title, xlab, ylab, feature) {
 ```
 
 A graphical visualization with a barplot shows the distribution of this column.
-```{r echo=TRUE}
+```{r echo=TRUE, fig.height=4, fig.width=8}
 parking_lot <- unique(chefmozparking_df$parking_lot)
 title <- "Total restaurants per parking lot type"
 xlab <- "Parking Lot"
@@ -900,7 +901,7 @@ The final dataset contains information about the ratings that users gave to rest
 
 <br>
 
-<b>It's interesting to notice that even though rating, food_rating and service_rating are presented as numerical features, they only have 3 possible values: 0, 1 or 2. This means that the problem of predicting the ratings can either be treated as a regression or classification problem. In this project we will focus on predicting the combined ratings using regression.</b>
+<b>It's interesting to notice that even though rating, food_rating and service_rating are presented as numerical features, they only have 3 possible values: 0, 1 or 2. This means that the problem of predicting the ratings can either be treated as a regression or classification problem.</b>
 
 ```{r}
 # Columns
@@ -937,7 +938,7 @@ sprintf("There are %d restaurants and %d users.", total_restaurants, total_users
 
 <br>
 
-## Data Preparation
+## 3. Data Preparation
 
 Similarly to the approach used in Data Understanding, we execute each of the steps of this new CRISP-DM phase to all of the dataframes.
 
@@ -1576,50 +1577,220 @@ write.csv(final_df, file = "final_df.csv")
 
 <br>
 
-## Modeling
+## 4. Modeling: 1st iteration
 
-The main goal for this project is to predict the ratings that would be given by each customer for the restaurants that he/she didn't rate. In Data Understanding we saw that ratings are numerical values, so predicting their values can be treated as a regression problem. Using classification techniques is also reasonable since the possible ratings are three discrete integers: 0, 1 and 2. We will focus on predicting the ratings, and not predict food_rating or service_rating.
+The main goal for this project is to predict the ratings that would be given by each customer for the restaurants that he/she didn't rate. In Data Understanding we saw that ratings are numerical values, but only three, so predicting their values can be treated as a regression or classifiacation problem. As already discussed, we will focus on predicting only the combined ratings, and food rating or service rating.
 
-### Select test and training sets
-As this is a supervised learning problem, the first step is to select the training and test datasets.
-We will use the holdout technique.
+As a first approach, we will try predict the values using regression models.
 
+#### 4.1 Linear regression #1
 ```{r}
-H = holdout(final_df$rating, ratio = 0.8)
+# Start the clock!
+ptm <- proc.time()
+
+# Create model
+linear_model_1 <- mining(rating~., final_df, model = "lm", method = c("kfold", 2))
+
+# Analyze model
+summary(linear_model_1)
+
+# Stop the clock
+proc.time() - ptm
 ```
 
-### Model #1: Neuronal Network
+<br>
+
+#### 4.2 C&R Tree #1
+```{r}
+# Start the clock!
+ptm <- proc.time()
+
+# Create model
+crt_model_1 <- mining(rating~., final_df, model = "ctree", method = c("kfold", 2))
+
+# Analyze model
+summary(crt_model_1)
+
+# Stop the clock
+proc.time() - ptm
+```
+
+<br>
+
+#### 4.3 Decision Tree #1
+```{r}
+# Start the clock!
+ptm <- proc.time()
+
+# Create model
+dt_model_1 <- mining(rating~., final_df, model = "dt", method = c("kfold", 2))
+
+# Analyze model
+summary(dt_model_1)
+
+# Stop the clock
+proc.time() - ptm
+```
+
+<br>
+
+#### 4.4 Random Forest #1
+```{r}
+# Start the clock!
+ptm <- proc.time()
+
+# Create model
+dt_model_1 <- mining(rating~., final_df, model = "randomforest", method = c("kfold", 2))
+
+# Analyze model
+summary(dt_model_1)
+
+# Stop the clock
+proc.time() - ptm
+```
+
+<br>
+
+## 5. Evaluation: 1st iteration
+
+In the first modeling iteration we used four regression models (Linear Regression, C&R Tree, Decision Tree and Random Forest). All models had similar MAE (close to 0.5), except for Random Forest which, with MAE close to 0.3, showed a clear performance increase.
+
+#### 5.1 Linear regression #1
+```{r}
+# Calculate metrics
+mae <- mmetric(linear_model_1, metric = "MAE")
+nmae <- mmetric(linear_model_1, metric = "NMAE")
+sprintf("MAE = %f | NMAE = %f", mae, nmae)
+```
+
+#### 5.2 C&R Tree #1
+```{r}
+# Calculate metrics
+mae <- mmetric(crt_model_1, metric = "MAE")
+nmae <- mmetric(crt_model_1, metric = "NMAE")
+sprintf("MAE = %f | NMAE = %f", mae, nmae)
+```
+
+#### 5.3 Decision Tree #1
+```{r}
+# Calculate metrics
+mae <- mmetric(dt_model_1, metric = "MAE")
+nmae <- mmetric(dt_model_1, metric = "NMAE")
+sprintf("MAE = %f | NMAE = %f", mae, nmae)
+```
+
+#### 5.4 Random Forest #1
+```{r}
+# Calculate metrics
+mae <- mmetric(dt_model_1, metric = "MAE")
+nmae <- mmetric(dt_model_1, metric = "NMAE")
+sprintf("MAE = %f | NMAE = %f", mae, nmae)
+```
+
+<br>
+
+## 4. Modeling: 2nd iteration
+
+The performance of the previous models doesn't reach reasonable acceptable levels. For this reason, we decided to try another approach using an increasing number of random forest trees. This modeling will be executed using Gradient Boosting, which generates lots of models on training data and uses their combined power to increase the accuracy of the final model which is formed by combining them.
 
 ```{r}
 # Start the clock!
 ptm <- proc.time()
 
-Fi <- fit(rating~., final_df[H$tr,], model = "mlp")
+# Split training and test data
+split = sample.split(final_df$rating, SplitRatio = 0.8)
+training_set = subset(final_df, split == TRUE)
+test_set = subset(final_df, split == FALSE)
+
+# Create model
+regressorBoost.boost=gbm(rating ~ . , data = training_set, distribution = "gaussian", n.trees = 10000,
+                 shrinkage = 0.01, interaction.depth = 4)
+regressorBoost.boost
 
 # Stop the clock
 proc.time() - ptm
-
-P <- predict(Fi, final_df[H$ts,])
-
-mmetric(final_df[H$ts,]$rating, P, metric = "MAE")
-mmetric(final_df[H$ts,]$rating, P, metric = "MAPE")
 ```
 
-## Evaluation
+An important aspect to notice is that this model indicated that all of the 32 predictors (features) had some influence on the rating. The following graph shows the importance of all of the features, sorted from the most important to the least.
 
-## Deployment
+```{r}
+# Variable importance plot
+summary(regressorBoost.boost) #Summary gives a table of Variable Importance and a plot of Variable Importance
+```
+
+## 5. Evaluation: 2nd iteration
+
+Finally, we plot the evolution of the mean squared error with the increase of trees.
+
+```{r}
+# Create a sequence with the number of tree to use
+n.trees = seq(from=100, to=10000, by=100)
+
+# Calculate prediction matrix
+predmatrix <- predict(regressorBoost.boost, training_set, n.trees = n.trees)
+
+# Calculate mean squared error for the evolution of each 100 trees
+test.error <- with(training_set, apply( (predmatrix-rating)^2, 2, mean))
+
+head(test.error)
+
+# Plot the evolution of test error vs number of trees
+plot(n.trees, test.error , pch=19, col="blue", xlab="Number of Trees", ylab="Test Error", main = "Perfomance of Boosting on Test Set")
+```
+
+<br>
+
+## 4. Modeling: 3rd iteration
+
+As a final approach we decided to select the top 17 most influential features to analyze if the model performs better or faster.
+
+```{r}
+# Start the clock!
+ptm <- proc.time()
+
+# Create model
+regressorBoost2.boost=gbm(rating ~ color + Ucity + interest + smoking_area + Rcuisine + drink_level + dress_preference + alcohol + parking_lot + price + personality + ambience + religion + city + transport + Ucuisine + accessibility , data = training_set, distribution = "gaussian", n.trees = 10000,
+                 shrinkage = 0.01, interaction.depth = 4)
+regressorBoost2.boost
+
+# Stop the clock
+proc.time() - ptm
+```
+
+## 5. Evaluation: 3rd iteration
+
+By removing the least important variables, the model needs to perform more iterations to achieve better results.
+
+```{r}
+# Create a sequence with the number of tree to use
+n.trees = seq(from=100, to=10000, by=100)
+
+# Calculate prediction matrix
+predmatrix <- predict(regressorBoost2.boost, training_set, n.trees = n.trees)
+
+# Calculate mean squared error for the evolution of each 100 trees
+test.error <- with(training_set, apply( (predmatrix-rating)^2, 2, mean))
+
+head(test.error)
+
+# Plot the evolution of test error vs number of trees
+plot(n.trees, test.error , pch=19, col="blue", xlab="Number of Trees", ylab="Test Error", main = "Perfomance of Boosting on Test Set")
+```
+
+## 6. Deployment
 
 This step will not be executed.
 
+## 7. Conclusion
+
+During the research to execute this project we found many ways to implement regression models, each one with their own peculiarities. After evaluating the performance of Linear Regression, C&R Trees, Decision Trees and Random Forest, we decided to chose the Gradient Boosting technique, which makes use of several Random Trees, to achieve the desired predictions and a better understanding of our dataset. 
+
 # Bibliography
 
-https://www.kaggle.com/liyenhsu/simple-content-based-recommenders
-
-Get mode: https://www.tutorialspoint.com/r/r_mean_median_mode.htm
-
-CRISP-DM: https://www.sv-europe.com/crisp-dm-methodology/
-
-
-
+<p>Content based recommenders: https://www.kaggle.com/liyenhsu/simple-content-based-recommenders</p>
+<p>Get mode: https://www.tutorialspoint.com/r/r_mean_median_mode.htm</p>
+<p>CRISP-DM: https://www.sv-europe.com/crisp-dm-methodology/</p>
+<p>Gradient Boosting: https://datascienceplus.com/gradient-boosting-in-r/</p>
+<p>Gradient Boosting: https://www.analyticsvidhya.com/blog/2016/04/complete-tutorial-tree-based-modeling-scratch-in-python/</p>
 
 
