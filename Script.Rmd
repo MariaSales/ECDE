@@ -1,5 +1,5 @@
 ---
-title: "Restaurante and consumer data"
+title: "Restaurant and consumer data"
 output: html_notebook
 ---
 
@@ -33,7 +33,7 @@ library(ggplot2)
 
 <br>
 
-## 1. Business Undestanding
+## 1. Business&nbsp;Understanding
 
 ### 1.1 Setting business objectives
 
@@ -41,15 +41,15 @@ Restaurants of a given location are rated by consumers, being given a grade to t
 
 ### 1.2 Assess the current situation
 
-A study will be executed starting with a given varied range of characteristics of both restaurants and consumers, such as location, type of cuisine and price, among others. Throughout the project some of the variables will be excluded or transformed, and others will be created based on existing information, in order to produce the best results.
+A study will be executed starting with a given varied range of characteristics of both restaurants and consumers, such as location, type of cuisine and price, among others. Throughout the project, some of the variables will be excluded or transformed, and others will be created based on existing information, in order to produce the best results.
 
 ### 1.3 Determine data mining goals
 
 The challenge for this project is the analysis and transformation of the information, using several functions and libraries of the R language, and also recurring to external APIs, in order to obtain the necessary information to predict the missing ratings. To achieve this, supervised learning algorithms will be used and adapted to the proposed problem. These algorithms will be compared and the best performing ones will be selected. 
 
-### 1.4 Produce project plan
+### 1.4 Produce the project plan
 
-This project will follow the CRISP-DM methodology, starting by understanding the provided files in order to identify the relations between them and merge in one dataframe. The necessary treatments, such as the exclusion and creation of features, will then be identified. After that, several supervised learning models will be apllied and their performance evaluated.
+This project will follow the CRISP-DM methodology, starting by understanding the provided files in order to identify the relations between them and merge in one data frame. The necessary treatments, such as the exclusion and creation of features, will then be identified. After that, several supervised learning models will be applied and their performance evaluated.
 
 <br>
 
@@ -59,21 +59,24 @@ The first step to start analyzing the provided data is to read all the .csv file
 
 ```{r echo=TRUE}
 # Read datasets
+
 # Restaurants
 chefmozaccepts_df <- read.csv("chefmozaccepts.csv")
 chefmozcuisine_df <- read.csv("chefmozcuisine.csv")
 chefmozhours4_df <- read.csv("chefmozhours4.csv")
 chefmozparking_df <- read.csv("chefmozparking.csv")
 geoplaces2_df <- read.csv("geoplaces2.csv",encoding='latin-1')
+
 # Consumers 
 usercuisine_df <- read.csv("usercuisine.csv")
 userpayment_df <- read.csv("userpayment.csv")
 userprofile_df <- read.csv("userprofile.csv")
+
 # User-Item-Rating
 rating_final_df <- read.csv("rating_final.csv")
 ```
 
-After importing all the necessary data, it's necessary analyze it by visualizing some important information and statistics. During this phase, we decided to iterate over the steps "Data gathering", "Descriptive analysis", "Exploratory analysis" and "Data quality verification" for each of the given .csv files.
+After importing all the required data, it's necessary to analyze it by visualizing some important information and statistics. During this phase, we decided to iterate over the steps "Data gathering", "Descriptive analysis", "Exploratory analysis" and "Data quality verification" for each of the given .csv files.
 
 <br>
 
@@ -104,7 +107,7 @@ sprintf("Rpayment has %d levels.", nlevels(chefmozaccepts_df$Rpayment))
 sprintf("There are %d unique placeID's.", length(unique(chefmozaccepts_df$placeID)))
 ```
 
-From this analysis we conclude that this dataset has no missing values, but a treatment to Rpayment is necessary to reduce the number of levels of this feature.
+From this analysis, we conclude that this dataset has no missing values, but a treatment to Rpayment is necessary to reduce the number of levels of this feature.
 
 <br>
 
@@ -135,7 +138,7 @@ sprintf("Rcuisine has %d levels.", nlevels(chefmozcuisine_df$Rcuisine))
 sprintf("There are %d unique placeID's.", length(unique(chefmozcuisine_df$placeID)))
 ```
 
-From this analysis we conclude that this dataset has no missing values, but a treatment to Rcuisine is necessary to reduce the number of levels of this feature.
+From this analysis, we conclude that this dataset has no missing values, but a treatment to Rcuisine is necessary to reduce the number of levels of this feature.
 
 <br>
 
@@ -169,7 +172,7 @@ sprintf("days has %d levels.", nlevels(chefmozhours4_df$days))
 sprintf("There are %d unique placeID's.", length(unique(chefmozhours4_df$placeID)))
 ```
 
-From this analysis we conclude that this dataset has no missing values, but a treatment to hours is necessary to reduce the number of levels of this feature.
+From this analysis, we conclude that this dataset has no missing values, but a treatment to hours is necessary to reduce the number of levels of this feature.
 
 <br>
 
@@ -200,7 +203,9 @@ sprintf("parking_lot has %d levels.", nlevels(chefmozparking_df$parking_lot))
 sprintf("There are %d unique placeID's.", length(unique(chefmozparking_df$placeID)))
 ```
 
-From this analysis we conclude that this dataset has no missing values, and no treatment is necessary. If we decide to use the feature parking_lot and the data modeling takes too much time, we can consider reducing the levels of this column.
+From this analysis, we conclude that this dataset has no missing values, and no treatment is necessary. If we decide to use the feature parking_lot and the data modeling takes too much time, we can consider reducing the levels of this column.
+
+<br>
 
 ##### Feature 4.1: parking_lot
 
@@ -272,7 +277,9 @@ colSums(geoplaces2_df == "?")
 sprintf("There are %d unique placeID's.", length(unique(geoplaces2_df$placeID)))
 ```
 
-An interesting analysis is to try to understand if any of the given restaurant features affect the ratings. In order to make this analysis easier, we elaborated connected scatterplots which show the relation between each restaurant feature and the ratings.
+<br>
+
+An interesting analysis is to try to understand if any of the given restaurant features affect the ratings. In order to make this analysis easier, we elaborated connected scatterplots which show the relationship between each restaurant feature and the ratings.
 
 ```{r echo=TRUE}
 # Merge ratings and restaurants
@@ -298,11 +305,13 @@ calculateMeanRating <- function(feature, value, rating) {
 }
 ```
 
+<br>
+
 ##### Feature 5.1: alcohol
 
-From this graph we can conclude that, in general, the rating of the restaurant increases when some type of alcohol is provided, but the food rating has a slighly decrease then the restaurant offers a full bar service.
+From this graph, we can conclude that, in general, the rating of the restaurant increases when some type of alcohol is provided, but the food rating has a slight decrease then the restaurant offers a full bar service.
 
-```{r}
+```{r fig.height=5, fig.width=5}
 # Calculate mean rating per each type of alcohol for general rating
 mean_no_alcohol_rating <- calculateMeanRating("alcohol", "No_Alcohol_Served", "rating")
 mean_wine_rating <- calculateMeanRating("alcohol", "Wine-Beer", "rating")
@@ -334,7 +343,7 @@ drawConnectedScatterplot(total, rating, service, food, title, xlab, ylim, 0:2, l
 
 ##### Feature 5.2: smoking_area
 
-From this graph we can observe that food rating reaches the top mean rating when smoking is permitted, but service and combined ratings have the highest value when only at bar smoking is allowed. Not permitted smoking option has the lowest ratings overall.
+From this graph, we can observe that food rating reaches the top mean rating when smoking is permitted, but service and combined ratings have the highest value when only at bar smoking is allowed. "Not permitted" smoking option has the lowest ratings overall.
 
 ```{r}
 # Calculate mean rating per each type of smoking_area for general rating
@@ -374,7 +383,7 @@ drawConnectedScatterplot(total, rating, service, food, title, xlab, ylim, 0:4, l
 
 ##### Feature 5.3: dress_code
 
-This graph shows a clear relation between formal dress code and high ratings, while casul and informal dress code have similar, but medium, ratings.
+This graph shows a clear relation between formal dress code and high ratings, while casual and informal dress codes have similar, but medium, ratings.
 
 ```{r}
 # Calculate mean rating per each type of dress_code for general rating
@@ -408,7 +417,7 @@ drawConnectedScatterplot(total, rating, service, food, title, xlab, ylim, 0:2, l
 
 ##### Feature 5.4: accessibility
 
-Contrary to common sense, complete accessibility has lower classification comparing to partial.
+Contrary to common sense, complete accessibility has lower classification comparing to partial accessibility.
 
 ```{r}
 # Calculate mean rating per each type of accessibility for general rating
@@ -442,7 +451,7 @@ drawConnectedScatterplot(total, rating, service, food, title, xlab, ylim, 0:2, l
 
 ##### Feature 5.5: price
 
-From the following chart we can conclude that medium and high price restaurants have better ratings than lower price restaurants, but there's no significant difference in ratings between medium and high budget restaurants.
+From the following chart, we can conclude that medium and high price restaurants have better ratings than lower price restaurants, but there's no significant difference in ratings between medium and high budget restaurants.
 
 ```{r}
 # Calculate mean rating per each type of price for general rating
@@ -476,7 +485,7 @@ drawConnectedScatterplot(total, rating, service, food, title, xlab, ylim, 0:2, l
 
 ##### Feature 5.6: Rambience
 
-From this graph we can conclude that food and service ratings decrease from familiar to quiet ambience, while combined ratings increase.
+From this graph, we can conclude that food and service ratings decrease from familiar to the quiet ambience, while combined ratings increase.
 
 ```{r}
 # Calculate mean rating per each type of Rambience for general rating
@@ -507,7 +516,7 @@ drawConnectedScatterplot(total, rating, service, food, title, xlab, ylim, 0:1, l
 
 ##### Feature 5.7: franchise
 
-This graph shows that there is no significant varience for franchise or no franchise ratings.
+This graph shows that there is no significant variance for a franchise or no franchise ratings.
 
 ```{r}
 # Calculate mean rating per each type of franchise for general rating
@@ -569,7 +578,7 @@ drawConnectedScatterplot(total, rating, service, food, title, xlab, ylim, 0:1, l
 
 ##### Feature 5.9: other_services
 
-This graph shows that restaurants that provide with internet or other services have better ratings comparing to resturants that provide no additional services.
+This graph shows that restaurants that provide with internet or other services have better ratings comparing to restaurants that provide no additional services.
 
 ```{r}
 # Calculate mean rating per each type of other_services for general rating
@@ -603,10 +612,10 @@ drawConnectedScatterplot(total, rating, service, food, title, xlab, ylim, 0:2, l
 ```
 
 From this analysis we conclude that this dataset needs the following treatments:
-<li>discover the missing cities with the given latitute and longitude, and then drop these coordinates;</li>
+<li>discover the missing cities with the given latitude and longitude, and then drop these coordinates;</li>
 <li>drop the_geom_meter. The location of the restaurant will be given by the city;</li>
-<li>drop the name of the restaurant, because it works as an unique identifier and it should't influence ratings;</li>
-<li>drop address, state, fax, url and zip, because we decided to focus in the city only to classify the location influence;</li>
+<li>drop the name of the restaurant, because it works as a unique identifier and it shouldn't influence ratings;</li>
+<li>drop address, state, fax, url, and zip, because we decided to focus in the city only to classify the location influence;</li>
 <li>drop country, because all restaurants are from Mexico (which means that this is an irrelevant feature).</li>
 
 <br>
@@ -638,7 +647,7 @@ sprintf("Rcuisine has %d levels.", nlevels(usercuisine_df$Rcuisine))
 sprintf("There are %d unique userID's.", length(unique(usercuisine_df$userID)))
 ```
 
-From this analysis we conclude that this dataset has no missing values, but a treatment to Rcuisine is necessary to reduce the number of levels of this feature. This treatment should match the one performed to Rcuisine in chefmozcuisine.
+From this analysis, we conclude that this dataset has no missing values, but a treatment to Rcuisine is necessary to reduce the number of levels of this feature. This treatment should match the one performed to Rcuisine in chefmozcuisine.
 
 <br>
 
@@ -669,7 +678,7 @@ sprintf("Upayment has %d levels.", nlevels(userpayment_df$Upayment))
 sprintf("There are %d unique userID's.", length(unique(userpayment_df$userID)))
 ```
 
-From this analysis we conclude that this dataset has no missing values, but a treatment to Upayment is necessary to reduce the number of levels of this feature, and it should match the treatment performed to chefmozaccepts.
+From this analysis, we conclude that this dataset has no missing values, but a treatment to Upayment is necessary to reduce the number of levels of this feature, and it should match the treatment performed to chefmozaccepts.
 
 <br>
 
@@ -725,6 +734,8 @@ colSums(userprofile_df == "?")
 # Number of users
 sprintf("There are %d unique userID's.", length(unique(userprofile_df$userID)))
 ```
+
+<br>
 
 The elaboration of some barplots allowed us to understand the distribution of these nominal features.
 
@@ -874,8 +885,8 @@ We decided to analyze the distribution of the feature height using a boxplot, bu
 boxplot(userprofile_df$height)
 ```
 
-From this analysis we conclude that this dataset needs the following treatments:
-<li>discover the user cities to match the restaurant cities with the given latitute and longitude, and then drop these coordinates;</li>
+From the previous analysis we conclude that this dataset needs the following treatments:
+<li>discover the user cities to match the restaurant cities with the given latitude and longitude, and then drop these coordinates;</li>
 <li>drop the_geom_meter, like we did in geoplaces;</li>
 <li>discover smoker missing values;</li>
 <li>discover dress_preference missing values;</li>
@@ -901,7 +912,7 @@ The final dataset contains information about the ratings that users gave to rest
 
 <br>
 
-<b>It's interesting to notice that even though rating, food_rating and service_rating are presented as numerical features, they only have 3 possible values: 0, 1 or 2. This means that the problem of predicting the ratings can either be treated as a regression or classification problem.</b>
+<b>It's interesting to notice that even though rating, food_rating, and service_rating are presented as numerical features, they only have 3 possible values: 0, 1 or 2. This means that the problem of predicting the ratings can either be treated as a regression or classification problem.</b>
 
 ```{r}
 # Columns
@@ -928,6 +939,7 @@ sprintf("There are %d unique placeID's.", length(unique(rating_final_df$placeID)
 
 #### Conclusion
 
+In this phase, we analyzed the available data presented in the given dataset and decided which treatments are necessary to prepare data for the modeling phase.
 In total, there are 938 restaurants and 138 users. Users provided 1161 ratings, but only to 130 restaurants different restaurants. Each restaurant and each user are characterized by a set of features, which will be used to predict the missing ratings.
 
 ```{r}
@@ -940,16 +952,16 @@ sprintf("There are %d restaurants and %d users.", total_restaurants, total_users
 
 ## 3. Data Preparation
 
-Similarly to the approach used in Data Understanding, we execute each of the steps of this new CRISP-DM phase to all of the dataframes.
+Similarly to the approach used in Data Understanding, we execute each of the steps of this new CRISP-DM phase to all of the datasets
 
 <br>
 
 #### Dataset 1: chefmozaccepts
 
-As observed in Data Understanding, this dataset has an attribute (Rpayment) that has 12 levels. An important treatment to this feature is to reduce the amount of levels. The same problem exists in userpayment dataframe with Upayment, but instead this one has 5 levels. To accommodate the treatment for both datasets, the following levels will be created (instead of the originals presented in the datasets):
+As observed in Data Understanding, this dataset has an attribute (Rpayment) that has 12 levels. An important treatment for this feature is to reduce the number of levels. The same problem exists in userpayment dataset with Upayment, but instead, this one has 5 levels. To accommodate the treatment for both datasets, the following levels will be created (instead of the originals presented in the datasets):
 
 1. Card 
-  - Instead of: American_Express, bank_debit_cards, Carte_Blanche, Visa, VISA, MasterCard-Eurocard, Diners_Club, Discover and Japan_Credit_Bureau
+  - Instead of: American_Express, bank_debit_cards, Carte_Blanche, Visa, VISA, MasterCard-Eurocard, Diners_Club, Discover, and Japan_Credit_Bureau
 2. Cash
   - Instead of: cash
 3. Other
@@ -996,12 +1008,12 @@ summary(chefmozaccepts_df$Rpayment)
 
 #### Datset 2: chefmozcuisine
 
-As observed in Data Understanding, this dataset has an attribute (Rcuisine) that has 59 levels. An important treatment to this feature is to reduce the amount of levels. The same problem exists in usercuisine dataframe, but instead this one has 103 levels. To accommodate the treatment for both datasets, the following levels will be created (instead of the originals presented in the datasets):
+As observed in Data Understanding, this dataset has an attribute (Rcuisine) that has 59 levels. An important treatment for this feature is to reduce the number of levels. The same problem exists in usercuisine dataset, whereas this one has 103 levels. To accommodate the treatment for both datasets, the following levels will be created (instead of the originals presented in the datasets):
 
 1. Bar/Cafeteria 
-  - Instead of: Bagels, Bakery, Bar, Bar_Pub_Brewery, Breakfast-Brunch, Cafe-Coffee_Shop, Cafeteria, Deli-Sandwiches, Dessert-Ice_Cream, Doughnuts and Juice
+  - Instead of: Bagels, Bakery, Bar, Bar_Pub_Brewery, Breakfast-Brunch, Cafe-Coffee_Shop, Cafeteria, Deli-Sandwiches, Dessert-Ice_Cream, Doughnuts, and Juice
 2. National
-  - Instead of: Mexican, Regional and Tex-Mex
+  - Instead of: Mexican, Regional, and Tex-Mex
 3. Oriental
   - Instead of: Asian, Cambodian, Chinese, Dim_Sum, Filipino, Japanese, Korean, Malaysian, Mongolian, Sushi, Thai, Tibetan, Vietnamese
 4. American
@@ -1058,7 +1070,7 @@ summary(chefmozcuisine_df$Rcuisine)
 
 #### Dataset 3: chefmozhours4
 
-As discussed in Data Understading, it's necessary to reduce the number of levels presented in hours feature. In order to achieve this, we decided to create three new features: saturday, sunday and weekday. By analyzing the data in this dataframe we can verify if the restaurant is open on these respective days, and therefore fill their values (1 if open, 0 if closed).
+As discussed in Data Understanding, it's necessary to reduce the number of levels presented in hours feature. In order to achieve this, we decided to create three new features: saturday, sunday and weekday. By analyzing the data in this dataset we can verify if the restaurant is open on these respective days, and therefore fill their values (1 if open, 0 if closed).
 
 ```{r}
 
@@ -1131,7 +1143,7 @@ summary(chefmozhours4_df)
 
 #### Dataset 4: chefmozparking
 
-As discussed in Data Undestanding, no treatment will be applied to this dataset.
+As discussed in Data Understanding, no treatment will be applied to this dataset.
 
 <br>
 
@@ -1139,7 +1151,7 @@ As discussed in Data Undestanding, no treatment will be applied to this dataset.
 
 ##### 5.1 Discover missing cities
 
-As the orignal dataset has 18 missing cities, we will use restaurant's latitude and longitude to call a geo-information API (maps.googleapis) in order to fill the missing values.
+As the original dataset has 18 missing cities, we will use restaurant's latitude and longitude to call a geo-information API (maps.googleapis) in order to fill the missing values.
 
 ```{r}
 # Auxiliar function: calculate city
@@ -1237,8 +1249,8 @@ geoplaces2_df$city <- as.factor(geoplaces2_df$city)
 ```
 
 
-During this process we were able to find 17/18 missing cities. For the last missing value we decided to go directly to Google Maps and verify which was the corresponding city.
-Additionaly, we decided to drop the initial city column and use only the values retrieved from the API since they had more quality. City ended up as a nominal feature with 7 levels.
+During this process, we were able to find 17/18 missing cities. For the last missing value, we decided to go directly to Google Maps and verify which was the corresponding city.
+Additionally, we decided to drop the initial city column and use only the values retrieved from the API since they had more quality. City ended up as a nominal feature with 7 levels.
 
 ```{r}
 summary(geoplaces2_df$city)
@@ -1260,9 +1272,9 @@ geoplaces2_df <- geoplaces2_df[,c("placeID", "city", "alcohol",
 
 #### Dataset 6: usercuisine
 
-As discussed in Data Understanding section, a treatment to Ucuisine will be applied to reduce the number of levels. This treatment matches the one perfomed to chefmozcuisine dataset.
+As discussed in Data Understanding section, a treatment to Ucuisine will be applied to reduce the number of levels. This treatment matches the one performed to chefmozcuisine dataset.
 
-```{r}
+```{r echo=TRUE}
 # Calculate new RCuisine types
 usercuisine_df <- calculateCuisine(usercuisine_df)
 
@@ -1299,9 +1311,11 @@ calculateMode <- function(v) {
 }
 ```
 
+<br>
+
 ##### 8.1 Treat smoker missing values
 
-This column has 50 missing values, where 26 are 'true' (smoker) and 112 are 'false' (non smoker). This means that the mode for this column is 'false'. In this case, and because it's preferrable to put a smoker person in a non-smoking restaurant than a non-smoker in a smoker restaurant, we will impute the missing values with 'false' (non smoker).
+This column has 50 missing values, where 26 are 'true' (smoker) and 112 are 'false' (non.smoker). This means that the mode of this column is 'false'. In this case, and because it's preferable to put a smoker person in a non-smoking restaurant than a non-smoker in a smoker restaurant, we will impute the missing values with 'false' (non-smoker).
 
 ```{r}
 summary(userprofile_df$smoker)
@@ -1320,9 +1334,11 @@ userprofile_df <- imputation("value", userprofile_df, "smoker", Value=smoker_mod
 print(summary(userprofile_df$smoker))
 ```
 
+<br>
+
 ##### 8.2 Treat dress_preference missing values
 
-This column has 5 missing values. The mode for this column is 'no preference'.
+This column has 5 missing values. The mode of this column is 'no preference'.
 ```{r}
 summary(userprofile_df$dress_preference)
 
@@ -1340,9 +1356,11 @@ userprofile_df <- imputation("value", userprofile_df, "dress_preference", Value=
 print(summary(userprofile_df$dress_preference))
 ```
 
+<br>
+
 ##### 8.3 Treat ambience missing values
 
-This column has 6 missing values. The mode for this column is 'family'.
+This column has 6 missing values. The mode of this column is 'family'.
 
 ```{r}
 summary(userprofile_df$ambience)
@@ -1359,6 +1377,8 @@ sprintf("Mode: %s", ambience_mode)
 userprofile_df <- imputation("value", userprofile_df, "ambience", Value=ambience_mode)
 print(summary(userprofile_df$ambience))
 ```
+
+<br>
 
 ##### 8.4 Treat transport missing values
 
@@ -1379,6 +1399,8 @@ userprofile_df <- imputation("value", userprofile_df, "transport", Value=transpo
 print(summary(userprofile_df$transport))
 ```
 
+<br>
+
 ##### 8.5 Treat marital_status missing values
 
 This column has 4 missing values, and the mode is 'single'.
@@ -1397,6 +1419,8 @@ sprintf("Mode: %s", marital_status_mode)
 userprofile_df <- imputation("value", userprofile_df, "marital_status", Value=marital_status_mode)
 print(summary(userprofile_df$marital_status))
 ```
+
+<br>
 
 ##### 8.6 Treat hijos missing values
 
@@ -1417,6 +1441,8 @@ userprofile_df <- imputation("value", userprofile_df, "hijos", Value=hijos_mode)
 print(summary(userprofile_df$hijos))
 ```
 
+<br>
+
 ##### 8.7 Treat activity missing values
 
 This column has 7 missing values, and the mode is 'student'.
@@ -1435,6 +1461,8 @@ sprintf("Mode: %s", activity_mode)
 userprofile_df <- imputation("value", userprofile_df, "activity", Value=activity_mode)
 print(summary(userprofile_df$activity))
 ```
+
+<br>
 
 ##### 8.8 Treat budget missing values
 
@@ -1455,6 +1483,8 @@ userprofile_df <- imputation("value", userprofile_df, "budget", Value=budget_mod
 print(summary(userprofile_df$budget))
 ```
 
+<br>
+
 ##### 8.9 Drop unused levels
 
 After removing all NA's, we need to remove that level from all of the columns.
@@ -1463,9 +1493,11 @@ After removing all NA's, we need to remove that level from all of the columns.
 userprofile_df <- droplevels(userprofile_df, as.factor("?"))
 ```
 
+<br>
+
 ##### 8.10 Discover missing cities
 
-```{r}
+```{r echo=TRUE}
 # Calculate missing cities and store them into a csv
 calculateCity(userprofile_df, "user_cities.csv")
 
@@ -1505,12 +1537,14 @@ userprofile_df$city <- as.factor(userprofile_df$city)
 setnames(userprofile_df, old=c("city"), new=c("Ucity"))
 ```
 
-During this process we were able to find all missing cities expect 6. For the last missing values we decided to go directly to Google Maps and verify which was the corresponding city.
-Additionaly, we decided to drop the initial city column and use only the values retrieved from the API since they had more quality. City ended up as a nominal feature with 7 levels.
+During this process, we were able to find all missing cities expect 6. For the last missing values, we decided to go directly to Google Maps and verify which was the corresponding city.
+Additionally, we decided to drop the initial city column and use only the values retrieved from the API since they had more quality. City ended up as a nominal feature with 7 levels.
 
 ```{r}
 summary(userprofile_df$Ucity)
 ```
+
+<br>
 
 ##### 8.11 Select relevant features
 
@@ -1537,7 +1571,7 @@ rating_final_df <- rating_final_df[,c("userID", "placeID", "rating")]
 
 The dataset that will be used for modeling should include all the treatments applied during this phase and the relevant features that were identified.
 
-```{r}
+```{r echo=TRUE}
 # Join dataframes
 final_df <- merge(rating_final_df, chefmozaccepts_df, by = "placeID")
 final_df <- merge(final_df, chefmozcuisine_df, by = "placeID")
@@ -1547,7 +1581,8 @@ final_df <- merge(final_df, geoplaces2_df, by = "placeID")
 final_df <- merge(final_df, usercuisine_df, by = "userID")
 final_df <- merge(final_df, userpayment_df, by = "userID")
 final_df <- merge(final_df, userprofile_df, by = "userID")
-
+```
+```{r echo=TRUE}
 # Analyze final dataframe
 # Columns
 names(final_df)
@@ -1572,16 +1607,17 @@ final_df <- final_df[ , !(names(final_df) %in% drops)]
 
 # Save in file
 write.csv(final_df, file = "final_df.csv")
-
 ```
 
 <br>
 
 ## 4. Modeling: 1st iteration
 
-The main goal for this project is to predict the ratings that would be given by each customer for the restaurants that he/she didn't rate. In Data Understanding we saw that ratings are numerical values, but only three, so predicting their values can be treated as a regression or classifiacation problem. As already discussed, we will focus on predicting only the combined ratings, and food rating or service rating.
+The main goal of this project is to predict the ratings that would be given by each customer for the restaurants that he/she didn't rate. In Data Understanding we saw that ratings are numerical values, but only three, so predicting their values can be treated as a regression or classification problem. As already discussed, we will focus on predicting only the combined ratings, and not food rating or service rating, using regression models.
 
-As a first approach, we will try predict the values using regression models.
+<p>For the first approach, we will select four different modeling techniques, and use k-fold method (with k = 2) to partition the training and datasets.<p>
+
+<br>
 
 #### 4.1 Linear regression #1
 ```{r}
@@ -1653,7 +1689,9 @@ proc.time() - ptm
 
 ## 5. Evaluation: 1st iteration
 
-In the first modeling iteration we used four regression models (Linear Regression, C&R Tree, Decision Tree and Random Forest). All models had similar MAE (close to 0.5), except for Random Forest which, with MAE close to 0.3, showed a clear performance increase.
+In the first modeling iteration, we used four regression models (Linear Regression, C&R Tree, Decision Tree and Random Forest). All models had similar MAE (close to 0.5), except for Decision Tree and Random Forest which, with MAE close to 0.3, showed a clear performance increase. All the models took almost the same amount of time to compute (close to 1 second, since the amount of data that we have is small). It's possible to notice that Random Forest accuses 23 seconds, but this only happened because the algorithm kept asking if we wanted to use regression (after skipping that step, this algorithm is as fast as the others).
+
+<br>
 
 #### 5.1 Linear regression #1
 ```{r}
@@ -1663,6 +1701,8 @@ nmae <- mmetric(linear_model_1, metric = "NMAE")
 sprintf("MAE = %f | NMAE = %f", mae, nmae)
 ```
 
+<br>
+
 #### 5.2 C&R Tree #1
 ```{r}
 # Calculate metrics
@@ -1671,6 +1711,8 @@ nmae <- mmetric(crt_model_1, metric = "NMAE")
 sprintf("MAE = %f | NMAE = %f", mae, nmae)
 ```
 
+<br>
+
 #### 5.3 Decision Tree #1
 ```{r}
 # Calculate metrics
@@ -1678,6 +1720,8 @@ mae <- mmetric(dt_model_1, metric = "MAE")
 nmae <- mmetric(dt_model_1, metric = "NMAE")
 sprintf("MAE = %f | NMAE = %f", mae, nmae)
 ```
+
+<br>
 
 #### 5.4 Random Forest #1
 ```{r}
@@ -1691,7 +1735,7 @@ sprintf("MAE = %f | NMAE = %f", mae, nmae)
 
 ## 4. Modeling: 2nd iteration
 
-The performance of the previous models doesn't reach reasonable acceptable levels. For this reason, we decided to try another approach using an increasing number of random forest trees. This modeling will be executed using Gradient Boosting, which generates lots of models on training data and uses their combined power to increase the accuracy of the final model which is formed by combining them.
+The performance of the previous models doesn't reach reasonably acceptable levels. For this reason, we decided to try another approach using an increasing number of random forest trees. This modeling will be executed using Gradient Boosting, which generates an increasing number of models on training data and uses their combined power to increase the accuracy of the final model which is formed by combining them.
 
 ```{r}
 # Start the clock!
@@ -1740,9 +1784,16 @@ plot(n.trees, test.error , pch=19, col="blue", xlab="Number of Trees", ylab="Tes
 
 <br>
 
+The number of necessary trees to reach a mean squared error of less than 0.1 is 6500.
+```{r}
+head(test.error[which(test.error < 0.1)],1)
+```
+
+<br>
+
 ## 4. Modeling: 3rd iteration
 
-As a final approach we decided to select the top 17 most influential features to analyze if the model performs better or faster.
+As a final approach we decided to select the top 17 most influential features to analyze if the model performs better or faster, since it takes 35 seconds to compute all forests when using all features.
 
 ```{r}
 # Start the clock!
@@ -1777,18 +1828,27 @@ head(test.error)
 plot(n.trees, test.error , pch=19, col="blue", xlab="Number of Trees", ylab="Test Error", main = "Perfomance of Boosting on Test Set")
 ```
 
+<br>
+
+The number of necessary trees to reach a mean squared error of less than 0.1 is 7500.
+```{r}
+head(test.error[which(test.error < 0.1)],1)
+```
+
+<br>
+
 ## 6. Deployment
 
-This step will not be executed.
+This phase is not covered by this project.
 
 ## 7. Conclusion
 
-During the research to execute this project we found many ways to implement regression models, each one with their own peculiarities. After evaluating the performance of Linear Regression, C&R Trees, Decision Trees and Random Forest, we decided to chose the Gradient Boosting technique, which makes use of several Random Trees, to achieve the desired predictions and a better understanding of our dataset. 
+During the research to execute this project we found many ways to implement regression models, each one with their own peculiarities. After evaluating the performance of Linear Regression, C&R Trees, Decision Trees and Random Forest, we decided to choose the Gradient Boosting technique, which makes use of several Random Trees, to achieve the desired predictions and a better understanding of our dataset. For the implementation of this technique, we selected and treated 32 features of the datasets, and ended up with a mean squared error of less than 0.1 by combining 6500 trees (Random Forest).
 
 # Bibliography
 
 <p>Content based recommenders: https://www.kaggle.com/liyenhsu/simple-content-based-recommenders</p>
-<p>Get mode: https://www.tutorialspoint.com/r/r_mean_median_mode.htm</p>
+<p>Mode calculation: https://www.tutorialspoint.com/r/r_mean_median_mode.htm</p>
 <p>CRISP-DM: https://www.sv-europe.com/crisp-dm-methodology/</p>
 <p>Gradient Boosting: https://datascienceplus.com/gradient-boosting-in-r/</p>
 <p>Gradient Boosting: https://www.analyticsvidhya.com/blog/2016/04/complete-tutorial-tree-based-modeling-scratch-in-python/</p>
